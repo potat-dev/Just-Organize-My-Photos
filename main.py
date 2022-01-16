@@ -10,26 +10,13 @@ class Ui(QMainWindow):
     image_list = []
     path = ""
 
-    # def setChildrenFocusPolicy(self, policy):
-    #     def recursiveSetChildFocusPolicy (parentQWidget):
-    #         for childQWidget in parentQWidget.findChildren():
-    #             childQWidget.setFocusPolicy(policy)
-    #             recursiveSetChildFocusPolicy(childQWidget)
-    #     recursiveSetChildFocusPolicy(self)
-
     def __init__(self):
         super(Ui, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
-
-        self.ui.pushButton.clicked.connect(self.checkPath)
-        # QtGui.qApp.installEventFilter(self)
-
-        # self.setWindowFlags(self.windowFlags() |
-        #     QtCore.Qt.WindowStaysOnTopHint |
-        #     QtCore.Qt.FramelessWindowHint)
-
+        # actoins
+        self.ui.path_btn.clicked.connect(self.checkPath)
         self.show()
 
     def setChildrenFocusPolicy (self, policy):
@@ -44,19 +31,20 @@ class Ui(QMainWindow):
         self.image_list = [item for i in [glob.glob(f"{self.path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
         self.im_count = len(self.image_list)
         self.image_id = 0
-        self.ui.label_2.setText(f"path: {self.path} ({self.im_count} photo)")
+        self.ui.path_text.setText(f"path: {self.path} ({self.im_count} photo)")
         if self.im_count > 0:
             self.displayImg()
 
     def displayImg(self):
-        if os.path.isfile(self.image_list[self.image_id]):
-            w, h = self.ui.graphicsView.width(), self.ui.graphicsView.height()
-            scene = QtWidgets.QGraphicsScene(self)
-            pixmap = QPixmap(self.image_list[self.image_id])
-            item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio))
-            scene.addItem(item)
-            self.ui.graphicsView.setScene(scene)
-            self.ui.label.setText(f"image {self.image_id} / {self.im_count}")
+        if self.im_count > 0:
+            if os.path.isfile(self.image_list[self.image_id]):
+                w, h = self.ui.graphicsView.width(), self.ui.graphicsView.height()
+                scene = QtWidgets.QGraphicsScene(self)
+                pixmap = QPixmap(self.image_list[self.image_id])
+                item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio))
+                scene.addItem(item)
+                self.ui.graphicsView.setScene(scene)
+                self.ui.info_text.setText(f"image {self.image_id + 1} / {self.im_count}")
 
     def nextImage(self, order):
         self.image_id += order
@@ -67,9 +55,11 @@ class Ui(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_1:
+            self.ui.pushButton_1.animateClick()
             self.nextImage(1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_2:
+            self.ui.pushButton_2.animateClick()
             self.nextImage(-1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_Right:
@@ -97,66 +87,11 @@ class Ui(QMainWindow):
         elif event.key() == QtCore.Qt.Key_Enter:
             pass
         elif event.key() == QtCore.Qt.Key_Space:
-            pass 
+            self.ui.pushButton_s.animateClick() 
         else:
             QMainWindow.keyPressEvent(self, event)
-    
-    # def resizeEvent(self, event):
-    #     if not self.graphicsView.pixmap().isNull():
-    #         self.fitInView(self.graphicsView, QtCore.Qt.KeepAspectRatio)
-    #     super(Ui, self).resizeEvent(event)
-    # def keyPressEvent(self, event):
-		#     if event.key() == Qt.Key_Space:
-		#     	self.test_method()
-
-    # def test_method(self):
-	  #   	print('Space key pressed')
 
 
 app = QApplication([])
 ui = Ui()
 sys.exit(app.exec_())
-
-
-# from PyQt5 import uic, QtWidgets
-# from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog, QGraphicsPixmapItem, QGraphicsScene
-# from PyQt5.QtGui import QPixmap
-# from PIL import Image
-# import glob
-# import sys
-
-# Form, _ = uic.loadUiType("main.ui")
-
-# class Ui(QMainWindow, Form):
-#   def __init__(self):
-#     super(Ui, self).__init__()
-#     self.setupUi(self)
-
-#     self.pushButton.clicked.connect(self.test)
-
-#   def test(self):
-#     path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-#     print(path)
-#     image_list = [item for i in [glob.glob(f"{path}/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
-#     print(image_list)
-#     self.displayImg(image_list[0])
-
-#   def displayImg(self, image_path):
-#     pix = QPixmap(image_path)
-#     item = QGraphicsPixmapItem(pix)
-#     scene = QGraphicsScence(self)
-#     scene.addItem(item)
-#     self.graphicsView.setScene(scene)
-  
-# app = QApplication([])
-# window = Ui()
-# window.show()
-# sys.exit(app.exec_())
-
-# # app = QApplication([])
-# # window = Window()
-# # form = Form()
-# # form.setupUi(window)
-# # form.pushButton.clicked.connect(test)
-# # window.show()
-# # app.exec_()
