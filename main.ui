@@ -192,13 +192,19 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>555</y>
+      <y>505</y>
       <width>351</width>
-      <height>21</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
      <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

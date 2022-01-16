@@ -6,7 +6,9 @@ from ui import *
 
 class Ui(QMainWindow):
     image_id = 0
+    im_count = 0
     image_list = []
+    path = ""
 
     # def setChildrenFocusPolicy(self, policy):
     #     def recursiveSetChildFocusPolicy (parentQWidget):
@@ -38,9 +40,13 @@ class Ui(QMainWindow):
         recursiveSetChildFocusPolicy(self.ui.centralwidget)
     
     def checkPath(self):
-        path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.image_list = [item for i in [glob.glob(f"{path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
-        self.displayImg()
+        self.path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.image_list = [item for i in [glob.glob(f"{self.path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
+        self.im_count = len(self.image_list)
+        self.image_id = 0
+        self.ui.label_2.setText(f"path: {self.path} ({self.im_count} photo)")
+        if self.im_count > 0:
+            self.displayImg()
 
     def displayImg(self):
         if os.path.isfile(self.image_list[self.image_id]):
@@ -50,19 +56,27 @@ class Ui(QMainWindow):
             item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio))
             scene.addItem(item)
             self.ui.graphicsView.setScene(scene)
+            self.ui.label.setText(f"image {self.image_id} / {self.im_count}")
+
+    def nextImage(self, order):
+        self.image_id += order
+        if self.image_id == self.im_count:
+            self.image_id = 0
+        elif self.image_id < 0:
+            self.image_id = self.im_count-1
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_1:
-            self.image_id += 1
+            self.nextImage(1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_2:
-            self.image_id += -1
+            self.nextImage(-1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_Right:
-            self.image_id += 1
+            self.nextImage(1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_Left:
-            self.image_id += -1
+            self.nextImage(-1)
             self.displayImg()
         elif event.key() == QtCore.Qt.Key_3:
             pass
