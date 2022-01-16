@@ -49,13 +49,15 @@ class Ui(QMainWindow):
         return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
     
     def checkPath(self): # currently not supporting RAW, ARW, ...
-        self.path = self.pickDirectory()
-        self.image_list = [item for i in [glob.glob(f"{self.path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
-        self.im_count = len(self.image_list)
-        self.image_id = 0
-        self.ui.path_text.setText(f"path: {self.path} ({self.im_count} photo)")
-        if self.im_count > 0:
-            self.displayImg()
+        temp = self.pickDirectory()
+        if temp != "":
+            self.path = temp
+            self.image_list = [item for i in [glob.glob(f"{self.path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
+            self.im_count = len(self.image_list)
+            self.image_id = 0
+            self.ui.path_text.setText(f"path: {self.path} ({self.im_count} photo)")
+            if self.im_count > 0:
+                self.displayImg()
 
     def displayImg(self):
         if self.im_count > 0:
