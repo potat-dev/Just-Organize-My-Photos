@@ -15,14 +15,6 @@ def convert_size(size_bytes):
 class Ui(QMainWindow):
     #TODO: вынести код в удобные красивые функции
     #TODO: реализовать алгоритм выбора папки для шортката
-    #TODO: добавить кнопки < > и удалить
-
-    image_id = 0
-    im_count = 0
-    image_list = []
-    path = ""
-    image_path = ""
-    image = None
 
     def __init__(self):
         super(Ui, self).__init__()
@@ -30,17 +22,34 @@ class Ui(QMainWindow):
         self.ui.setupUi(self)
         self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
         self.ui.path_btn.clicked.connect(self.checkPath)
+        self.ui.btn_next.clicked.connect(self.nextImage)
+        self.ui.btn_prev.clicked.connect(self.prevImage)
+
+        # variables
+        self.image_id = 0
+        self.im_count = 0
+        self.image_list = []
+        self.path = ""
+        self.image_path = ""
+        self.image = None
+
         self.show()
 
-    def setChildrenFocusPolicy (self, policy):
+    def nextImage(self): self.changeImage(1)
+    def prevImage(self): self.changeImage(-1)
+
+    def setChildrenFocusPolicy(self, policy):
         def recursiveSetChildFocusPolicy (parentQWidget):
             for childQWidget in parentQWidget.findChildren(QtWidgets.QWidget):
                 childQWidget.setFocusPolicy(policy)
                 recursiveSetChildFocusPolicy(childQWidget)
         recursiveSetChildFocusPolicy(self.ui.centralwidget)
+
+    def pickDirectory(self):
+        return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
     
     def checkPath(self): # currently not supporting RAW, ARW, ...
-        self.path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.path = self.pickDirectory()
         self.image_list = [item for i in [glob.glob(f"{self.path}\/*{ext}") for ext in ["jpg","jpeg","png"]] for item in i]
         self.im_count = len(self.image_list)
         self.image_id = 0
@@ -64,51 +73,29 @@ class Ui(QMainWindow):
                     f"Image {self.image_id + 1} / {self.im_count}\n" +
                     f"Res: {' × '.join([str(i) for i in self.image.size])}\n" +
                     f"Size: {convert_size(os.path.getsize(self.image_path))}\n" +
-                    f"Date: {datetime.fromtimestamp(os.path.getmtime(self.image_path)).strftime('%d.%m.%Y')}" # full: %d.%m.%Y %H:%M:%S
-                )
+                    f"Date: {datetime.fromtimestamp(os.path.getmtime(self.image_path)).strftime('%d.%m.%Y')}") # full: %d.%m.%Y %H:%M:%S
 
-    def nextImage(self, order):
+    def changeImage(self, order):
         self.image_id += order
         if self.image_id == self.im_count:
             self.image_id = 0
         elif self.image_id < 0:
             self.image_id = self.im_count-1
+        self.displayImg()
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_1:
-            self.nextImage(1) # for test
-            self.displayImg() # for test
-            self.ui.pushButton_1.animateClick()
+            self.changeImage(1) # for test
         elif event.key() == QtCore.Qt.Key_2:
-            self.nextImage(-1) # for test
-            self.displayImg()  # for test
-            self.ui.pushButton_2.animateClick()
+            self.changeImage(-1) # for test
         elif event.key() == QtCore.Qt.Key_Right:
-            self.nextImage(1)
-            self.displayImg()
+            self.changeImage(1)
         elif event.key() == QtCore.Qt.Key_Left:
-            self.nextImage(-1)
-            self.displayImg()
-        elif event.key() == QtCore.Qt.Key_3:
-            self.ui.pushButton_3.animateClick()
-        elif event.key() == QtCore.Qt.Key_4:
-            self.ui.pushButton_4.animateClick()
-        elif event.key() == QtCore.Qt.Key_5:
-            self.ui.pushButton_5.animateClick()
-        elif event.key() == QtCore.Qt.Key_6:
-            self.ui.pushButton_6.animateClick()
-        elif event.key() == QtCore.Qt.Key_7:
-            self.ui.pushButton_7.animateClick()
-        elif event.key() == QtCore.Qt.Key_8:
-            self.ui.pushButton_8.animateClick()
-        elif event.key() == QtCore.Qt.Key_9:
-            self.ui.pushButton_9.animateClick()
-        elif event.key() == QtCore.Qt.Key_0:
-            self.ui.pushButton_0.animateClick()
-        elif event.key() == QtCore.Qt.Key_Enter:
-            self.ui.pushButton_e.animateClick()
-        elif event.key() == QtCore.Qt.Key_Space:
-            self.ui.pushButton_s.animateClick() 
+            self.changeImage(-1)
+        # elif event.key() == QtCore.Qt.Key_Delete:
+        # elif event.key() == QtCore.Qt.Key_0:
+        # elif event.key() == QtCore.Qt.Key_Enter:
+        # elif event.key() == QtCore.Qt.Key_Space:
         else:
             QMainWindow.keyPressEvent(self, event)
 
