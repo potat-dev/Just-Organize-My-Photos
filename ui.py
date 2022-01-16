@@ -261,6 +261,6 @@ class Ui_MainWindow(object):
         self.pushButton_0.setText(_translate("MainWindow", "0"))
         self.pushButton_2.setText(_translate("MainWindow", "2"))
         self.pushButton_1.setText(_translate("MainWindow", "1"))
-        self.info_text.setText(_translate("MainWindow", "info"))
+        self.info_text.setText(_translate("MainWindow", "Image Info"))
         self.path_btn.setText(_translate("MainWindow", "Select Path"))
-        self.path_text.setText(_translate("MainWindow", "TextLabel"))
+        self.path_text.setText(_translate("MainWindow", "Path Info"))

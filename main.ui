@@ -368,7 +368,7 @@
      </font>
     </property>
     <property name="text">
-     <string>info</string>
+     <string>Image Info</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -407,7 +407,7 @@
      </font>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Path Info</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
