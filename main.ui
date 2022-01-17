@@ -328,6 +328,9 @@
       <height>611</height>
      </rect>
     </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
     <property name="verticalScrollBarPolicy">
      <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
@@ -338,7 +341,7 @@
      <enum>QAbstractScrollArea::AdjustToContents</enum>
     </property>
     <property name="interactive">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="dragMode">
      <enum>QGraphicsView::NoDrag</enum>
