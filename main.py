@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QFileDialog
+import os, sys, glob, math, subprocess
+from math import floor, log, pow
 from PyQt5.QtGui import QPixmap
 from datetime import datetime
-import os, sys, glob, math, subprocess
 from PyQt5 import QtCore
 from PIL import Image
-from math import floor, log, pow
 from ui import *
 
 def convert_size(size_bytes):
@@ -30,6 +30,7 @@ class Ui(QMainWindow):
         self.path       = ""
         self.image_path = ""
         self.image      = None
+        self.scene      = None
         
         super(Ui, self).__init__()
         self.ui = Ui_MainWindow()
@@ -79,23 +80,33 @@ class Ui(QMainWindow):
                 self.displayImg()
     
     def deleteImage(self):
-        del_img = self.image_list.pop(self.image_id)
-        # QtCore.QFile.moveToTrash(del_img)
-        os.remove(del_img) # временное решение
-        self.im_count = len(self.image_list)
-        if self.image_id == self.im_count: self.image_id -= 1
-        self.displayImg()
+        if self.im_count > 0:
+            del_img = self.image_list.pop(self.image_id)
+            self.image.close()
+            QtCore.QFile.moveToTrash(del_img)
+            self.im_count = len(self.image_list)
+            if self.image_id == self.im_count: self.image_id -= 1
+            if self.im_count > 0: self.displayImg()
+            else: self.clearPreview()
+    
+    def clearPreview(self):
+        self.scene.clear()
+        self.ui.graphicsView.viewport().update()
+        self.ui.path_text.setText(f"File: Null\nPath: {self.path}")
+        self.ui.info_text.setText(
+                        f"Image {self.image_id + 1} / {self.im_count}\n" +
+                        "[ all files sorted ]")
 
     def displayImg(self):
         if self.im_count > 0:
             self.image_path = self.image_list[self.image_id]
             if os.path.isfile(self.image_path):
                 w, h = self.ui.graphicsView.width(), self.ui.graphicsView.height()
-                scene = QtWidgets.QGraphicsScene(self)
+                self.scene = QtWidgets.QGraphicsScene(self)
                 pixmap = QPixmap(self.image_path)
                 item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio))
-                scene.addItem(item)
-                self.ui.graphicsView.setScene(scene)
+                self.scene.addItem(item)
+                self.ui.graphicsView.setScene(self.scene)
                 self.ui.path_text.setText(f"File: {os.path.basename(self.image_path)}\nPath: {self.path}")
                 
                 try:
@@ -141,7 +152,8 @@ class Ui(QMainWindow):
             self.changeImage(1)
         elif event.key() == QtCore.Qt.Key_Left:
             self.changeImage(-1)
-        # elif event.key() == QtCore.Qt.Key_Delete:
+        elif event.key() == QtCore.Qt.Key_Delete:
+            self.deleteImage()
         # elif event.key() == QtCore.Qt.Key_0:
         # elif event.key() == QtCore.Qt.Key_Enter:
         # elif event.key() == QtCore.Qt.Key_Space:
@@ -151,27 +163,3 @@ class Ui(QMainWindow):
 # run app
 app, ui = QApplication([]), Ui()
 sys.exit(app.exec_())
-
-
-## жалкие попытки перемещать файл в корзину ##
-
-# def deleteImage(self):
-#     im_pth = self.image_list.pop(self.image_id)
-#     self.im_count = len(self.image_list)
-#     # print(im_pth)
-#     # print(os.path.realpath(im_pth))
-#     file = QFile(im_pth)
-#     send2trash(str(file.fileName()).replace("/", "\\"))
-#     file.close()
-#     # print(file.moveToTrash())
-#     # print(file.fileName())
-#     # send2trash(os.path.realpath(im_pth))
-#     # QFile.moveToTrash(os.path.realpath(im_pth))
-#     if self.image_id == self.im_count:
-#         self.image_id -= 1
-#     self.displayImg()
-
-# from send2trash import send2trash
-# QtCore.QFile.moveToTrash("D:/Projects/PhotoOrganizer/test_for_del/20210629_193404.jpg")
-# send2trash(os.path.abspath("D:/Projects/PhotoOrganizer/test_for_del/f65240960.jpeg"))
-# def deleteFile(path): QtCore.QFile.moveToTrash(QtCore.QFile(path))
