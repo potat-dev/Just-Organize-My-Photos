@@ -19,8 +19,7 @@ def getModifyDate(path):
 
 class Ui(QMainWindow):
     #TODO: вынести код в удобные красивые функции
-    #TODO: реализовать алгоритм выбора папки для шортката
-    #TODO: пофиксить баг с невозможностью перемещения в корзину
+    #TODO: реализовать алгоритм выбора папки для шортката (в процессе)
 
     def __init__(self):
         # variables
@@ -31,6 +30,7 @@ class Ui(QMainWindow):
         self.image_path = ""
         self.image      = None
         self.scene      = None
+        self.folders    = {}
         
         super(Ui, self).__init__()
         self.ui = Ui_MainWindow()
@@ -42,8 +42,14 @@ class Ui(QMainWindow):
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.graphicsView.setMouseTracking(True)
         self.ui.graphicsView.viewport().installEventFilter(self)
+
+        self.ui.path_btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.path_btn.customContextMenuRequested.connect(self.handle_right_click)
         self.show()
 
+    def handle_right_click(self):
+        print("жопа")
+    
     def nextImage(self): self.changeImage(1)
     def prevImage(self): self.changeImage(-1)
 
@@ -68,7 +74,7 @@ class Ui(QMainWindow):
     def pickDirectory(self):
         return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
     
-    def checkPath(self): # currently not supporting RAW, ARW, ...
+    def checkPath(self): #! currently not supporting RAW, ARW, ...
         temp = self.pickDirectory()
         if temp != "":
             self.path = temp
@@ -143,23 +149,40 @@ class Ui(QMainWindow):
             self.image_id = self.im_count-1
         self.displayImg()
 
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_1:
-            self.changeImage(1) # for test
-        elif event.key() == QtCore.Qt.Key_2:
-            self.changeImage(-1) # for test
-        elif event.key() == QtCore.Qt.Key_Right:
-            self.changeImage(1)
-        elif event.key() == QtCore.Qt.Key_Left:
-            self.changeImage(-1)
-        elif event.key() == QtCore.Qt.Key_Delete:
-            self.deleteImage()
-        # elif event.key() == QtCore.Qt.Key_0:
-        # elif event.key() == QtCore.Qt.Key_Enter:
-        # elif event.key() == QtCore.Qt.Key_Space:
-        else:
-            QMainWindow.keyPressEvent(self, event)
+    #? beta
+    def move2folder(self, folder):
+        #* должно быть похоже на функцию удаления
+        #* нужно закрывать файл перед перемещением
+        if folder not in self.folders.keys() \
+        or QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
+            self.folders |= {str(folder):"None"}
+            print("выбрать папку и добавить новый ключ", folder)
+        # сделать проверку, выбрал ли пользователь папку
+        if folder in self.folders.keys():
+            print("тупо переместить файл в папку", folder)
 
-# run app
+    def keyPressEvent(self, event):
+        k = event.key()
+        if k == QtCore.Qt.Key_Delete:  self.deleteImage()
+        elif k == QtCore.Qt.Key_Right: self.changeImage(1)
+        elif k == QtCore.Qt.Key_Left:  self.changeImage(-1)
+
+        elif k == QtCore.Qt.Key_1: self.move2folder("1") #? test
+        elif k == QtCore.Qt.Key_2: self.move2folder("2")
+        elif k == QtCore.Qt.Key_3: self.move2folder("3")
+        elif k == QtCore.Qt.Key_4: self.move2folder("4")
+        elif k == QtCore.Qt.Key_5: self.move2folder("5")
+        elif k == QtCore.Qt.Key_6: pass
+        elif k == QtCore.Qt.Key_7: pass
+        elif k == QtCore.Qt.Key_8: pass
+        elif k == QtCore.Qt.Key_9: pass
+        elif k == QtCore.Qt.Key_0: pass
+
+        elif k == QtCore.Qt.Key_Enter: pass
+        elif k == QtCore.Qt.Key_Space: pass
+
+        else: QMainWindow.keyPressEvent(self, event)
+
+
 app, ui = QApplication([]), Ui()
-sys.exit(app.exec_())
+sys.exit(app.exec_()) #* run app
