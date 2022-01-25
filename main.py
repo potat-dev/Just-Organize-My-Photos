@@ -149,17 +149,28 @@ class Ui(QMainWindow):
             self.image_id = self.im_count-1
         self.displayImg()
 
-    #? beta
-    def move2folder(self, folder):
-        #* должно быть похоже на функцию удаления
-        #* нужно закрывать файл перед перемещением
+    #? beta ready
+    def move2folder(self, folder):        
         if folder not in self.folders.keys() \
         or QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
-            self.folders |= {str(folder):"None"}
-            print("выбрать папку и добавить новый ключ", folder)
-        # сделать проверку, выбрал ли пользователь папку
+            path = self.pickDirectory()
+            if path == "" : return None # проверка, выбрал ли пользователь папку
+            self.folders |= {str(folder): path}
+            print("для шортката", folder, "выбрана папка", path)
+            # print("выбрать папку и добавить новый ключ", folder)
+        
         if folder in self.folders.keys():
-            print("тупо переместить файл в папку", folder)
+            # print("тупо переместить файл в папку", folder)
+            self.image.close() #* нужно закрывать файл перед перемещением
+            img_pth = self.image_list.pop(self.image_id)
+            os.replace(img_pth, os.path.join(self.folders[folder], os.path.basename(img_pth)))
+            print(f"\n{img_pth}\nперемещено в\n{os.path.join(self.folders[folder], os.path.basename(img_pth))}")
+            # переходим к следующим фоткам
+            self.im_count = len(self.image_list)
+            if self.image_id == self.im_count: self.image_id -= 1
+            if self.im_count > 0: self.displayImg()
+            else: self.clearPreview()
+
 
     def keyPressEvent(self, event):
         k = event.key()
@@ -167,7 +178,7 @@ class Ui(QMainWindow):
         elif k == QtCore.Qt.Key_Right: self.changeImage(1)
         elif k == QtCore.Qt.Key_Left:  self.changeImage(-1)
 
-        elif k == QtCore.Qt.Key_1: self.move2folder("1") #? test
+        elif k == QtCore.Qt.Key_1: self.move2folder("1") #? test passed
         elif k == QtCore.Qt.Key_2: self.move2folder("2")
         elif k == QtCore.Qt.Key_3: self.move2folder("3")
         elif k == QtCore.Qt.Key_4: self.move2folder("4")
