@@ -20,6 +20,8 @@ def getModifyDate(path):
 
 class Ui(QMainWindow):
     def __init__(self):
+        super(Ui, self).__init__()
+
         self.image_id   = 0
         self.im_count   = 0
         self.image_list = []
@@ -28,8 +30,7 @@ class Ui(QMainWindow):
         self.image      = None
         self.scene      = None
         self.folders    = {}
- 
-        super(Ui, self).__init__()
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
@@ -39,6 +40,20 @@ class Ui(QMainWindow):
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.graphicsView.setMouseTracking(True)
         self.ui.graphicsView.viewport().installEventFilter(self)
+
+        self.btn_tags = [str(i) for i in range(1, 10)] + ["0", "Enter", "Space"]
+        self.btn_keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5,
+                         Qt.Key_6, Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0,
+                         Qt.Key_Enter, Qt.Key_Space]
+        self.buttons  = [self.ui.bt1, self.ui.bt2, self.ui.bt3, self.ui.bt4,
+                         self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
+                         self.ui.bt9, self.ui.bt0, self.ui.btE, self.ui.btS]
+
+        for btn, tag in zip(self.buttons, self.btn_tags):
+            btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+            btn.clicked.connect(lambda i=i: self.move2folder(folder=tag))
+            btn.customContextMenuRequested.connect(lambda checked, i=i:
+                self.move2folder(folder=tag, change=True))
 
         self.ui.path_btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.path_btn.customContextMenuRequested.connect(self.handle_right_click) # test
@@ -139,13 +154,21 @@ class Ui(QMainWindow):
             self.image_id = self.im_count-1
         self.displayImg()
 
-    def move2folder(self, folder):
-        #TODO: сделать отображение папки на кнопке  
-        if folder not in self.folders.keys() \
-        or QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
+    def move2folder(self, folder, change=False):
+        # if change: print("баабьмбьламабьабмабьбабаьмбаьбмббамбба")
+        if self.im_count <= 0: return None
+        modifier = QtWidgets.QApplication.keyboardModifiers()
+
+        #TODO: сделать отображение имени папки на кнопке
+        # print(folder not in self.folders.keys(), "\n", modifier) 
+        if change \
+        or folder not in self.folders.keys() \
+        or modifier == QtCore.Qt.ShiftModifier \
+        or modifier == QtCore.Qt.ControlModifier:
             path = self.pickDirectory()
             if path == "" : return None # проверка, выбрал ли пользователь папку
             self.folders |= {str(folder): path}
+            self.buttons[self.btn_tags.index(folder)].setText(folder + "\n" + os.path.basename(path))
 
         if folder in self.folders.keys():
             self.image.close() # нужно закрывать файл перед перемещением
@@ -157,17 +180,13 @@ class Ui(QMainWindow):
             else: self.clearPreview()
 
     def keyPressEvent(self, event):
-        keys = [Qt.Key_0, Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5,
-                Qt.Key_6, Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_Enter, Qt.Key_Space]
-        tags = [str(i) for i in range(10)] + ["E", "S"]
-
         k = event.key()
         if k == QtCore.Qt.Key_Delete:  self.deleteImage()
         elif k == QtCore.Qt.Key_Right: self.changeImage(1)
         elif k == QtCore.Qt.Key_Left:  self.changeImage(-1)
         
-        elif k in keys:
-            self.move2folder(tags[keys.index(k)])
+        elif k in self.btn_keys:
+            self.move2folder(self.btn_tags[self.btn_keys.index(k)])
 
         else: QMainWindow.keyPressEvent(self, event)
 
