@@ -319,7 +319,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="QGraphicsView" name="canvas">
     <property name="geometry">
      <rect>
       <x>10</x>
