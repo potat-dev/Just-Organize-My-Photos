@@ -3,6 +3,7 @@ import os, sys, glob, math, subprocess
 from math import floor, log, pow
 from PyQt5.QtGui import QPixmap
 from datetime import datetime
+from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PIL import Image
@@ -49,17 +50,27 @@ class Ui(QMainWindow):
                          self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
                          self.ui.bt9, self.ui.bt0, self.ui.btE, self.ui.btS]
 
+        #! здесь баг: при первом выборе папки, все кнопки
+        #! начинают перемещать фотки именно в эту папку
+        # for btn, tag in zip(self.buttons, self.btn_tags):
+        #     print("обработка кнопки", tag, ":", btn)
+        #     btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        #     btn.clicked.connect(lambda tag=tag: self.move2folder(folder=tag))
+        #     btn.customContextMenuRequested.connect(lambda checked, tag=tag:
+        #         self.move2folder(folder=tag, change=True))
+
+        print("настройка обработки нажатий кнопок") #? debug
         for btn, tag in zip(self.buttons, self.btn_tags):
+            print("обработка кнопки", tag, ":", btn)
             btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-            btn.clicked.connect(lambda i=i: self.move2folder(folder=tag))
-            btn.customContextMenuRequested.connect(lambda checked, i=i:
-                self.move2folder(folder=tag, change=True))
+            btn.clicked.connect(partial(self.move2folder, folder=tag))
+            btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
 
         self.ui.path_btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.path_btn.customContextMenuRequested.connect(self.handle_right_click) # test
+        self.ui.path_btn.customContextMenuRequested.connect(self.handle_right_click) #? test
         self.show()
 
-    def handle_right_click(self): print("жопа") # test
+    def handle_right_click(self): print("жопа") #? test
     def nextImage(self): self.changeImage(1)
     def prevImage(self): self.changeImage(-1)
 
@@ -110,8 +121,8 @@ class Ui(QMainWindow):
         self.ui.graphicsView.viewport().update()
         self.ui.path_text.setText(f"File: Null\nPath: {self.path}")
         self.ui.info_text.setText(
-                        f"Image {self.image_id + 1} / {self.im_count}\n" +
-                        "[ all files sorted ]")
+            f"Image {self.image_id + 1} / {self.im_count}\n" +
+            "[ all files sorted ]")
 
     def displayImg(self):
         if self.im_count > 0:
@@ -155,11 +166,12 @@ class Ui(QMainWindow):
         self.displayImg()
 
     def move2folder(self, folder, change=False):
-        # if change: print("баабьмбьламабьабмабьбабаьмбаьбмббамбба")
+        #TODO: сделать побольше принтов для отладки
+        #TODO: выловить баг с неправильной обработкой нажатий кнопок интерфейса
+        if change: print("баабьмбьламабьабмабьбабаьмбаьбмббамбба")
+
         if self.im_count <= 0: return None
         modifier = QtWidgets.QApplication.keyboardModifiers()
-
-        #TODO: сделать отображение имени папки на кнопке
         # print(folder not in self.folders.keys(), "\n", modifier) 
         if change \
         or folder not in self.folders.keys() \
@@ -167,7 +179,8 @@ class Ui(QMainWindow):
         or modifier == QtCore.Qt.ControlModifier:
             path = self.pickDirectory()
             if path == "" : return None # проверка, выбрал ли пользователь папку
-            self.folders |= {str(folder): path}
+            self.folders |= {folder: path}
+            print(folder) #? test
             self.buttons[self.btn_tags.index(folder)].setText(folder + "\n" + os.path.basename(path))
 
         if folder in self.folders.keys():
