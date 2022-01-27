@@ -1,0 +1,41 @@
+[Python]
+version = "3.9.7"
+install_host_from_source = false
+
+[PyQt]
+version = "5.15.7"
+disabled_features = ["PyQt_Desktop_OpenGL"]
+installed_modules = ["QtCore", "QtGui", "QtWidgets"]
+
+[Qt]
+version = "5.15.2"
+edition = "opensource"
+configure_options = ["-qt-pcre", "-no-dbus", "-no-system-proxies", "-no-cups",
+                     "-no-sql-db2", "-no-sql-ibase", "-no-sql-mysql", "-no-sql-sqlite",
+                     "-no-sql-sqlite2", "-no-sql-oci", "-no-sql-odbc", "-no-sql-psql",
+                     "-no-sql-tds", "-no-sqlite", "-optimize-size"]
+skip = ["qt3d", "qtactiveqt", "qtandroidextras", "qtcanvas3d", "qtcharts",
+        "qtconnectivity", "qtdatavis3d", "qtdeclarative", "qtdoc", "qtgamepad",
+        "qtgraphicaleffects", "qtlocation", "qtmacextras", "qtmultimedia",
+        "qtnetworkauth", "qtpurchasing", "qtquickcontrols", "qtquickcontrols2",
+        "qtremoteobjects", "qtscript", "qtscxml", "qtsensors", "qtserialbus",
+        "qtserialport", "qtspeech", "qtsvg", "qttools", "qttranslations",
+        "qtvirtualkeyboard", "qtwayland", "qtwebchannel", "qtwebengine",
+        "qtwebglplugin", "qtwebsockets", "qtwebview", "qtwinextras",
+        "qtx11extras", "qtxmlpatterns"]
+disabled_features = ["network", "bearermanagement", "dnslookup",
+                     "dtls", "ftp", "http", "localserver", "networkdiskcache",
+                     "networkinterface", "networkproxy", "socks5", "udpsocket",
+                     "concurrent", "future", "cups", "printer", "printdialog",
+                     "printpreviewdialog", "printpreviewwidget", "sql",
+                     "sqlmodel", "testlib", "xml"]
+static_msvc_runtime = true
+
+[SIP]
+version = "4.19.25"
+module_name = "PyQt5.sip"
+
+[zlib]
+version = "1.2.11"
+install_from_source = true
+static_msvc_runtime = true

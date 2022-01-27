@@ -1,0 +1,107 @@
+{
+  "win#zlib": {
+    "source": "D:/Projects/PhotoOrganizer/executable/zlib-1.2.11.tar.gz"
+  },
+  "win#qt5": {
+    "source": "D:/Projects/PhotoOrganizer/executable/qt-everywhere-src-5.15.2.tar.xz",
+    "edition": "opensource",
+    "configure_options": [
+      "-no-dbus",
+      "-no-system-proxies",
+      "-no-cups",
+      "-no-sql-db2",
+      "-no-sql-ibase",
+      "-no-sql-mysql",
+      "-no-sql-sqlite",
+      "-no-sql-sqlite2",
+      "-no-sql-oci",
+      "-no-sql-odbc",
+      "-no-sql-psql",
+      "-no-sql-tds",
+      "-no-sqlite",
+      "-ccache",
+      "-optimize-size"
+    ],
+    "skip": [
+      "qt3d",
+      "qtactiveqt",
+      "qtandroidextras",
+      "qtcanvas3d",
+      "qtcharts",
+      "qtconnectivity",
+      "qtdatavis3d",
+      "qtdeclarative",
+      "qtdoc",
+      "qtgamepad",
+      "qtgraphicaleffects",
+      "qtlocation",
+      "qtmacextras",
+      "qtmultimedia",
+      "qtnetworkauth",
+      "qtpurchasing",
+      "qtquickcontrols",
+      "qtquickcontrols2",
+      "qtremoteobjects",
+      "qtscript",
+      "qtscxml",
+      "qtsensors",
+      "qtserialbus",
+      "qtserialport",
+      "qtspeech",
+      "qtsvg",
+      "qttools",
+      "qttranslations",
+      "qtvirtualkeyboard",
+      "qtwayland",
+      "qtwebchannel",
+      "qtwebengine",
+      "qtwebglplugin",
+      "qtwebsockets",
+      "qtwebview",
+      "qtwinextras",
+      "qtx11extras",
+      "qtxmlpatterns"
+    ],
+    "disabled_features": [
+      "network",
+      "bearermanagement",
+      "dnslookup",
+      "dtls",
+      "ftp",
+      "http",
+      "localserver",
+      "networkdiskcache",
+      "networkinterface",
+      "networkproxy",
+      "socks5",
+      "udpsocket",
+      "concurrent",
+      "future",
+      "cups",
+      "printer",
+      "printdialog",
+      "printpreviewdialog",
+      "printpreviewwidget",
+      "sql",
+      "sqlmodel",
+      "testlib",
+      "xml"
+    ]
+  },
+  "win#python": {
+    "build_host_from_source": false,
+    "build_target_from_source": false
+  },
+  "win#sip": {
+    "module_name": "PyQt5.sip",
+    "source": "D:/Projects/PhotoOrganizer/executable/sip-4.19.25.tar.gz"
+  },
+  "win#pyqt5": {
+    "modules": [
+      "QtCore",
+      "QtGui",
+      "QtWidgets"
+    ],
+    "source": "D:/Projects/PhotoOrganizer/executable/PyQt5-5.15.7.dev2112111721.tar.gz"
+  }
+}
