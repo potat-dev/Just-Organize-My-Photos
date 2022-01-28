@@ -24,6 +24,7 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(940, 770))
         MainWindow.setStatusTip("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setAcceptDrops(True)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 630, 921, 131))

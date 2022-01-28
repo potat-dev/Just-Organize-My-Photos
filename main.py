@@ -39,6 +39,19 @@ class Ui(QMainWindow):
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.canvas.setMouseTracking(True)
         self.ui.canvas.viewport().installEventFilter(self)
+        self.ui.canvas.dropEvent = lambda event: print("DROP", event.mimeData().urls())
+        self.ui.canvas.dragEnterEvent = lambda event: event.accept()
+        self.ui.canvas.dragMoveEvent = lambda event: event.accept()
+        
+        # def dropEvent(self, event):
+        #     print("DROP", event.mimeData().urls())
+
+        # def dragEnterEvent(self, event):
+        #     event.accept()
+        #     # print("ENTER")
+
+        # def dragMoveEvent(self, event):
+        #     event.accept()
 
         self.tags = [str(i) for i in range(1, 10)] + ["0", "Enter", "Space"]
         self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5,

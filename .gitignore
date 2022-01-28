@@ -1,3 +1,5 @@
 test/
 __pycache__/
 .qt_for_python/
+*.exe
+*.7z

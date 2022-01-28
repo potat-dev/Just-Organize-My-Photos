@@ -35,6 +35,9 @@
    <string extracomment="Created with ♥ by CyberPotato"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="acceptDrops">
+    <bool>true</bool>
+   </property>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
