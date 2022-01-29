@@ -33,25 +33,17 @@ class Ui(QMainWindow):
         self.show()
 
         self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
-        self.ui.path_btn.clicked.connect(self.checkPath)
+        self.ui.path_btn.clicked.connect(self.selectFolder)
         self.ui.btn_next.clicked.connect(self.nextImage)
         self.ui.btn_prev.clicked.connect(self.prevImage)
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.canvas.setMouseTracking(True)
         self.ui.canvas.viewport().installEventFilter(self)
-        self.ui.canvas.dropEvent = lambda event: print("DROP", event.mimeData().urls())
-        self.ui.canvas.dragEnterEvent = lambda event: event.accept()
-        self.ui.canvas.dragMoveEvent = lambda event: event.accept()
         
-        # def dropEvent(self, event):
-        #     print("DROP", event.mimeData().urls())
-
-        # def dragEnterEvent(self, event):
-        #     event.accept()
-        #     # print("ENTER")
-
-        # def dragMoveEvent(self, event):
-        #     event.accept()
+        # настраиваем драгндроп
+        self.ui.canvas.dropEvent = lambda e: self.open_dnd(e)
+        self.ui.canvas.dragEnterEvent = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
+        self.ui.canvas.dragMoveEvent  = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
 
         self.tags = [str(i) for i in range(1, 10)] + ["0", "Enter", "Space"]
         self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5,
@@ -89,11 +81,17 @@ class Ui(QMainWindow):
                 recursiveSetChildFocusPolicy(childQWidget)
         recursiveSetChildFocusPolicy(self.ui.centralwidget)
 
-    def pickDirectory(self):
-        return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+    def selectFolder(self): self.checkPath(self.pickDirectory())
+    def pickDirectory(self): return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+
+    def open_dnd(self, e):
+        if e.mimeData().hasUrls():
+            #TODO: сделать сортировку сразу нескольких папок
+            path = e.mimeData().urls()[0].toLocalFile() #? берем только первую папку
+            if os.path.isdir(path):
+                self.checkPath(path)
     
-    def checkPath(self):
-        folder = self.pickDirectory()
+    def checkPath(self, folder):
         if folder == "": return None
         self.path = folder
         self.image_list = [
