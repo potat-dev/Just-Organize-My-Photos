@@ -39,7 +39,7 @@ class Ui(QMainWindow):
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.canvas.setMouseTracking(True)
         self.ui.canvas.viewport().installEventFilter(self)
-        
+
         # настраиваем драгндроп
         self.ui.canvas.dropEvent = lambda e: self.open_dnd(e)
         self.ui.canvas.dragEnterEvent = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
@@ -107,12 +107,15 @@ class Ui(QMainWindow):
     def deleteImage(self):
         if self.img_count > 0:
             del_img = self.image_list.pop(self.image_id)
-            self.image.close()
-            QtCore.QFile.moveToTrash(del_img)
             self.img_count = len(self.image_list)
             if self.image_id == self.img_count: self.image_id -= 1
             if self.img_count > 0: self.displayImg()
             else: self.clearPreview()
+            self.image.close()
+            if QtWidgets.QApplication.keyboardModifiers() == Qt.ControlModifier:
+                os.remove(del_img)
+            else:
+                QtCore.QFile.moveToTrash(del_img)
     
     def clearPreview(self):
         self.scene.clear()
