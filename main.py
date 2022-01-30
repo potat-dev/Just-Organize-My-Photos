@@ -21,7 +21,7 @@ def getModifyDate(path):
 
 class Ui(QMainWindow):
     def __init__(self):
-        super(Ui, self).__init__()
+        super().__init__()
 
         self.image_list, self.folders = [], {}
         self.image_id, self.img_count = 0, 0
@@ -34,8 +34,8 @@ class Ui(QMainWindow):
 
         self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
         self.ui.path_btn.clicked.connect(self.selectFolder)
-        self.ui.btn_next.clicked.connect(self.nextImage)
-        self.ui.btn_prev.clicked.connect(self.prevImage)
+        self.ui.btn_next.clicked.connect(partial(self.changeImage,  1))
+        self.ui.btn_prev.clicked.connect(partial(self.changeImage, -1))
         self.ui.btn_del.clicked.connect(self.deleteImage)
         self.ui.canvas.setMouseTracking(True)
         self.ui.canvas.viewport().installEventFilter(self)
@@ -46,10 +46,8 @@ class Ui(QMainWindow):
         self.ui.canvas.dragMoveEvent  = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
 
         self.tags = [str(i) for i in range(1, 10)] + ["0", "Enter", "Space"]
-        self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5,
-                     Qt.Key_6, Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0,
-                     Qt.Key_Enter, Qt.Key_Space]
-
+        self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5, Qt.Key_6,
+                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Return, Qt.Key_Space]
         self.buttons = [self.ui.bt1, self.ui.bt2, self.ui.bt3, self.ui.bt4,
                         self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
                         self.ui.bt9, self.ui.bt0, self.ui.btE, self.ui.btS]
@@ -58,10 +56,6 @@ class Ui(QMainWindow):
             btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             btn.clicked.connect(partial(self.move2folder, folder=tag))
             btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
-
-    def handle_right_click(self): print("test")
-    def nextImage(self): self.changeImage(1)
-    def prevImage(self): self.changeImage(-1)
 
     def viewImage(self):
         if self.image_path != "":
@@ -178,6 +172,7 @@ class Ui(QMainWindow):
         if folder in self.folders.keys():
             self.image.close() # нужно закрывать файл перед перемещением
             img_pth = self.image_list.pop(self.image_id)
+            #TODO: делать проверку, существует ли файл
             os.replace(img_pth, os.path.join(self.folders[folder], os.path.basename(img_pth)))
             self.img_count = len(self.image_list)
             if self.image_id == self.img_count: self.image_id -= 1
