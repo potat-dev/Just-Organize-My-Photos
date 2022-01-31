@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QApplication, QDialog, QWidget, QFileDialog
 import os, sys, glob, math, subprocess
 from math import floor, log, pow
 from PyQt5.QtGui import QPixmap
@@ -7,7 +7,7 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PIL import Image
-from ui import *
+from newUI import *
 
 def convert_size(size_bytes):
    if size_bytes == 0: return "0"
@@ -19,7 +19,7 @@ def getModifyDate(path):
     ts = os.path.getmtime(path)
     return "Null" if ts < 0 else datetime.fromtimestamp(ts).strftime('%d.%m.%Y')
 
-class Ui(QMainWindow):
+class Ui(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -28,7 +28,7 @@ class Ui(QMainWindow):
         self.image, self.scene = None, None
         self.path, self.image_path = "", ""
 
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_App()
         self.ui.setupUi(self)
         self.show()
 
@@ -45,12 +45,12 @@ class Ui(QMainWindow):
         self.ui.canvas.dragEnterEvent = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
         self.ui.canvas.dragMoveEvent  = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
 
-        self.tags = [str(i) for i in range(1, 10)] + ["0", "Enter", "Space"]
+        self.tags = [str(i) for i in range(1, 10)] + ["0", "Space", "Enter"]
         self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5, Qt.Key_6,
-                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Return, Qt.Key_Space]
+                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Space, Qt.Key_Return]
         self.buttons = [self.ui.bt1, self.ui.bt2, self.ui.bt3, self.ui.bt4,
                         self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
-                        self.ui.bt9, self.ui.bt0, self.ui.btE, self.ui.btS]
+                        self.ui.bt9, self.ui.bt0, self.ui.btS, self.ui.btE]
 
         for btn, tag in zip(self.buttons, self.tags):
             btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -73,7 +73,7 @@ class Ui(QMainWindow):
             for childQWidget in parentQWidget.findChildren(QtWidgets.QWidget):
                 childQWidget.setFocusPolicy(policy)
                 recursiveSetChildFocusPolicy(childQWidget)
-        recursiveSetChildFocusPolicy(self.ui.centralwidget)
+        recursiveSetChildFocusPolicy(self)
 
     def selectFolder(self): self.checkPath(self.pickDirectory())
     def pickDirectory(self): return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -160,15 +160,15 @@ class Ui(QMainWindow):
         self.displayImg()
 
     def move2folder(self, folder, change=False):
-        if self.img_count <= 0: return None
         modifier = QtWidgets.QApplication.keyboardModifiers()
         if change or folder not in self.folders.keys() \
         or modifier in (Qt.ControlModifier, Qt.ShiftModifier):
             path = self.pickDirectory()
             if path == "" : return None
             self.folders |= {folder: path}
-            self.buttons[self.tags.index(folder)].setText(folder + "\n" + os.path.basename(path))
+            self.buttons[self.tags.index(folder)].setText("Key " + folder + ":\n" + os.path.basename(path))
 
+        if self.img_count <= 0: return None # перемещать нечего
         if folder in self.folders.keys():
             self.image.close() # нужно закрывать файл перед перемещением
             img_pth = self.image_list.pop(self.image_id)
@@ -185,7 +185,7 @@ class Ui(QMainWindow):
         elif k == QtCore.Qt.Key_Right: self.changeImage(1)
         elif k == QtCore.Qt.Key_Left:  self.changeImage(-1)
         elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
-        else: QMainWindow.keyPressEvent(self, event)
+        else: QWidget.keyPressEvent(self, event)
 
 
 app, ui = QApplication([]), Ui()
