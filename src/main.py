@@ -10,6 +10,8 @@ from PIL import Image
 from ui import *
 import re
 
+img_ext = ["jpg","jpeg","png","jfif","bmp","gif","pbm","pgm","ppm","xbm","xpm"]
+
 def convert_size(size_bytes):
    if size_bytes == 0: return "0"
    i = int(floor(log(size_bytes, 1024)))
@@ -21,16 +23,17 @@ def getModifyDate(path):
     return "Null" if ts < 0 else datetime.fromtimestamp(ts).strftime('%d.%m.%Y')
 
 def smartRename(file):
+    make_filename = lambda p: p[0] + f"_({p[1]})." + p[2]
     filename, path = os.path.basename(file), os.path.dirname(file)
     match = re.match(r'(.+)_\((\d+)\)\.(.+)', filename)
-    parts = [match.group(i) for i in [1,2,3]] if match else filename.split('.').insert(1, 0)
-    print(parts)
+    parts = list(match.groups())[::2] if match else filename.split('.')
+    parts.insert(1, int(match.group(2)) if match else 0)
 
-    filename = parts[0] + f"_({int(parts[1]) + 1})." + parts[2]
-    new_path = os.path.join(path, filename)
-    #! не сможет переименовать больше 1000 файлов (и не оптимально)
-    #TODO: сделать не рекурсивное переименование
-    return new_path if not os.path.exists(new_path) else smartRename(new_path)
+    new_path = os.path.join(path, make_filename(parts))
+    while os.path.exists(new_path):
+        parts[1] += 1
+        new_path = os.path.join(path, make_filename(parts))     
+    return new_path
 
 
 class Ui(QWidget):
@@ -104,7 +107,7 @@ class Ui(QWidget):
         self.path = folder
         self.image_list = [
             item.replace("\\", "/") for i in [
-                glob.glob(f"{self.path}/*{ext}") for ext in ["jpg","jpeg","png", "jfif"]
+                glob.glob(f"{self.path}/*{ext}") for ext in img_ext
             ] for item in i
         ]
         self.img_count, self.image_id = len(self.image_list), 0
