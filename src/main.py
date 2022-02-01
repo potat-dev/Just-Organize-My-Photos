@@ -7,7 +7,7 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PIL import Image
-from newUI import *
+from ui import *
 import re
 
 def convert_size(size_bytes):
@@ -23,10 +23,10 @@ def getModifyDate(path):
 def smartRename(file):
     filename, path = os.path.basename(file), os.path.dirname(file)
     match = re.match(r'(.+)_\((\d+)\)\.(.+)', filename)
+    parts = [match.group(i) for i in [1,2,3]] if match else filename.split('.').insert(1, 0)
+    print(parts)
 
-    filename = match.group(1) + f"_({int(match.group(2)) + 1})." + match.group(3) \
-               if match else "_(1).".join(filename.split('.'))
-
+    filename = parts[0] + f"_({int(parts[1]) + 1})." + parts[2]
     new_path = os.path.join(path, filename)
     #! не сможет переименовать больше 1000 файлов (и не оптимально)
     #TODO: сделать не рекурсивное переименование
@@ -104,7 +104,7 @@ class Ui(QWidget):
         self.path = folder
         self.image_list = [
             item.replace("\\", "/") for i in [
-                glob.glob(f"{self.path}/*{ext}") for ext in ["jpg","jpeg","png"]
+                glob.glob(f"{self.path}/*{ext}") for ext in ["jpg","jpeg","png", "jfif"]
             ] for item in i
         ]
         self.img_count, self.image_id = len(self.image_list), 0
