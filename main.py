@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PIL import Image
 from newUI import *
+import re
 
 def convert_size(size_bytes):
    if size_bytes == 0: return "0"
@@ -18,6 +19,19 @@ def convert_size(size_bytes):
 def getModifyDate(path):
     ts = os.path.getmtime(path)
     return "Null" if ts < 0 else datetime.fromtimestamp(ts).strftime('%d.%m.%Y')
+
+def smartRename(file):
+    filename, path = os.path.basename(file), os.path.dirname(file)
+    match = re.match(r'(.+)_\((\d+)\)\.(.+)', filename)
+
+    filename = match.group(1) + f"_({int(match.group(2)) + 1})." + match.group(3) \
+               if match else "_(1).".join(filename.split('.'))
+
+    new_path = os.path.join(path, filename)
+    #! не сможет переименовать больше 1000 файлов (и не оптимально)
+    #TODO: сделать не рекурсивное переименование
+    return new_path if not os.path.exists(new_path) else smartRename(new_path)
+
 
 class Ui(QWidget):
     def __init__(self):
@@ -172,8 +186,13 @@ class Ui(QWidget):
         if folder in self.folders.keys():
             self.image.close() # нужно закрывать файл перед перемещением
             img_pth = self.image_list.pop(self.image_id)
-            #TODO: делать проверку, существует ли файл
-            os.replace(img_pth, os.path.join(self.folders[folder], os.path.basename(img_pth)))
+            new_pth = os.path.join(self.folders[folder], os.path.basename(img_pth))
+            #* делать проверку, существует ли файл
+            if os.path.isfile(new_pth):
+                print("файл уже существует", smartRename(new_pth))
+                new_pth = smartRename(new_pth)
+
+            os.replace(img_pth, new_pth)
             self.img_count = len(self.image_list)
             if self.image_id == self.img_count: self.image_id -= 1
             if self.img_count > 0: self.displayImg()
