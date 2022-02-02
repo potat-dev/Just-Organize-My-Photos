@@ -1,29 +1,30 @@
 # импортируем только необходимые модули PyQt5
 from PyQt5.QtWidgets import QApplication, QDialog, QWidget, QFileDialog
-from PyQt5.QtCore.QFile import moveToTrash
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import Qt, QEvent, QFile
 from PyQt5.QtGui import QPixmap
+
 # импортируем все остальное
 from sys import exit as sys_exit
 from functools import partial
 from glob import glob
 from PIL import Image
+
 # импортируем свои функции
 from func import *
 from ui import *
 
+
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
+        self.ui = Ui_App()
+        self.ui.setupUi(self)
+        self.show()
 
         self.image_list, self.folders = [], {}
         self.image_id, self.img_count = 0, 0
         self.image, self.scene = None, None
         self.path, self.image_path = "", ""
-
-        self.ui = Ui_App()
-        self.ui.setupUi(self)
-        self.show()
 
         self.setChildrenFocusPolicy(Qt.NoFocus)
         self.ui.path_btn.clicked.connect(self.selectFolder)
@@ -35,20 +36,21 @@ class Ui(QWidget):
 
         # настраиваем драгндроп
         self.ui.canvas.dropEvent = lambda e: self.open_dnd(e)
-        self.ui.canvas.dragEnterEvent = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
-        self.ui.canvas.dragMoveEvent  = lambda e: e.accept() if e.mimeData().hasUrls() else e.ignore()
+        self.ui.canvas.dragEnterEvent = lambda e: e.accept() if isAccepted(e) else e.ignore()
 
-        self.tags = [str(i) for i in range(1, 10)] + ["0", "Space", "Enter"]
-        self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5, Qt.Key_6,
-                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Space, Qt.Key_Return]
         self.buttons = [self.ui.bt1, self.ui.bt2, self.ui.bt3, self.ui.bt4,
                         self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
                         self.ui.bt9, self.ui.bt0, self.ui.btS, self.ui.btE]
+
+        self.tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Space", "Enter"]
+        self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5, Qt.Key_6,
+                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Space, Qt.Key_Return]
 
         for btn, tag in zip(self.buttons, self.tags):
             btn.setContextMenuPolicy(Qt.CustomContextMenu)
             btn.clicked.connect(partial(self.move2folder, folder=tag))
             btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
+
 
     def setChildrenFocusPolicy(self, policy):
         def recursiveSetChildFocusPolicy (parentQWidget):
@@ -57,15 +59,15 @@ class Ui(QWidget):
                 recursiveSetChildFocusPolicy(childQWidget)
         recursiveSetChildFocusPolicy(self)
 
-    def selectFolder(self): self.checkPath(self.pickDirectory())
-    def pickDirectory(self): return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+    def selectFolder(self):
+        self.checkPath(self.pickDirectory())
 
-    def open_dnd(self, e):
-        if e.mimeData().hasUrls():
-            #TODO: сделать сортировку сразу нескольких папок
-            path = e.mimeData().urls()[0].toLocalFile() #? берем только первую папку
-            if os.path.isdir(path):
-                self.checkPath(path)
+    def pickDirectory(self):
+        return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+
+    def open_dnd(self, event):
+        path = isAccepted(event)
+        if path: self.checkPath(path)  
     
     def checkPath(self, folder):
         if folder == "": return None
@@ -78,8 +80,8 @@ class Ui(QWidget):
         ]
         self.img_count, self.image_id = len(self.image_list), 0
         self.ui.path_text.setText(f"path: {self.path} ({self.img_count} photo)")
-        if self.img_count > 0:
-            self.displayImg()
+        if self.img_count == 0: return None
+        self.displayImg()
     
     def deleteImage(self):
         if self.img_count > 0:
@@ -92,7 +94,7 @@ class Ui(QWidget):
             if QtWidgets.QApplication.keyboardModifiers() == Qt.ControlModifier:
                 os.remove(del_img)
             else:
-                moveToTrash(del_img)
+                QFile.moveToTrash(del_img)
     
     def clearPreview(self):
         self.scene.clear()
