@@ -1,40 +1,16 @@
+# импортируем только необходимые модули PyQt5
 from PyQt5.QtWidgets import QApplication, QDialog, QWidget, QFileDialog
-import os, sys, glob, math, subprocess
-from math import floor, log, pow
+from PyQt5.QtCore.QFile import moveToTrash
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QPixmap
-from datetime import datetime
+# импортируем все остальное
+from sys import exit as sys_exit
 from functools import partial
-from PyQt5.QtCore import Qt
-from PyQt5 import QtCore
+from glob import glob
 from PIL import Image
+# импортируем свои функции
+from func import *
 from ui import *
-import re
-
-img_ext = ["jpg","jpeg","png","jfif","bmp","gif","pbm","pgm","ppm","xbm","xpm"]
-
-def convert_size(size_bytes):
-   if size_bytes == 0: return "0"
-   i = int(floor(log(size_bytes, 1024)))
-   s = round(size_bytes / pow(1024, i), 2)
-   return f"{s} {('B','KB','MB','GB')[i]}"
-
-def getModifyDate(path):
-    ts = os.path.getmtime(path)
-    return "Null" if ts < 0 else datetime.fromtimestamp(ts).strftime('%d.%m.%Y')
-
-def smartRename(file):
-    make_filename = lambda p: p[0] + f"_({p[1]})." + p[2]
-    filename, path = os.path.basename(file), os.path.dirname(file)
-    match = re.match(r'(.+)_\((\d+)\)\.(.+)', filename)
-    parts = list(match.groups())[::2] if match else filename.split('.')
-    parts.insert(1, int(match.group(2)) if match else 0)
-
-    new_path = os.path.join(path, make_filename(parts))
-    while os.path.exists(new_path):
-        parts[1] += 1
-        new_path = os.path.join(path, make_filename(parts))     
-    return new_path
-
 
 class Ui(QWidget):
     def __init__(self):
@@ -49,7 +25,7 @@ class Ui(QWidget):
         self.ui.setupUi(self)
         self.show()
 
-        self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
+        self.setChildrenFocusPolicy(Qt.NoFocus)
         self.ui.path_btn.clicked.connect(self.selectFolder)
         self.ui.btn_next.clicked.connect(partial(self.changeImage,  1))
         self.ui.btn_prev.clicked.connect(partial(self.changeImage, -1))
@@ -70,20 +46,9 @@ class Ui(QWidget):
                         self.ui.bt9, self.ui.bt0, self.ui.btS, self.ui.btE]
 
         for btn, tag in zip(self.buttons, self.tags):
-            btn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+            btn.setContextMenuPolicy(Qt.CustomContextMenu)
             btn.clicked.connect(partial(self.move2folder, folder=tag))
             btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
-
-    def viewImage(self):
-        if self.image_path != "":
-            os.startfile(self.image_path, 'open')
-
-    def showImageInExplorer(self):
-        if self.image_path != "":
-            subprocess.run([
-                os.path.join(os.getenv('WINDIR'), 'explorer.exe'),
-                '/select,',
-                os.path.normpath(self.image_path)])
 
     def setChildrenFocusPolicy(self, policy):
         def recursiveSetChildFocusPolicy (parentQWidget):
@@ -107,7 +72,8 @@ class Ui(QWidget):
         self.path = folder
         self.image_list = [
             item.replace("\\", "/") for i in [
-                glob.glob(f"{self.path}/*{ext}") for ext in img_ext
+                glob(f"{self.path}/*{ext}") for ext in \
+                ["jpg","jpeg","png","jfif","bmp","gif","pbm","pgm","ppm","xbm","xpm"]
             ] for item in i
         ]
         self.img_count, self.image_id = len(self.image_list), 0
@@ -126,7 +92,7 @@ class Ui(QWidget):
             if QtWidgets.QApplication.keyboardModifiers() == Qt.ControlModifier:
                 os.remove(del_img)
             else:
-                QtCore.QFile.moveToTrash(del_img)
+                moveToTrash(del_img)
     
     def clearPreview(self):
         self.scene.clear()
@@ -143,7 +109,7 @@ class Ui(QWidget):
             w, h = self.ui.canvas.width(), self.ui.canvas.height()
             self.scene = QtWidgets.QGraphicsScene(self)
             pixmap = QPixmap(self.image_path)
-            item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio))
+            item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, Qt.KeepAspectRatio))
             self.scene.addItem(item)
             self.ui.canvas.setScene(self.scene)
             self.ui.path_text.setText(f"File: {os.path.basename(self.image_path)}\nPath: {self.path}")
@@ -161,11 +127,11 @@ class Ui(QWidget):
                     "[ corrupted image file ]")
 
     def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.MouseButtonPress:
-            if event.button() == QtCore.Qt.LeftButton:
-                self.viewImage()
-            elif event.button() == QtCore.Qt.RightButton:
-                self.showImageInExplorer()
+        if event.type() == QEvent.MouseButtonPress:
+            if event.button() == Qt.LeftButton:
+                viewFile(self.image_path)
+            elif event.button() == Qt.RightButton:
+                showInExplorer(self.image_path)
         return super(Ui, self).eventFilter(source, event)
 
     def changeImage(self, order):
@@ -203,12 +169,12 @@ class Ui(QWidget):
 
     def keyPressEvent(self, event):
         k = event.key()
-        if k == QtCore.Qt.Key_Delete:  self.deleteImage()
-        elif k == QtCore.Qt.Key_Right: self.changeImage(1)
-        elif k == QtCore.Qt.Key_Left:  self.changeImage(-1)
+        if k == Qt.Key_Delete:  self.deleteImage()
+        elif k == Qt.Key_Right: self.changeImage(1)
+        elif k == Qt.Key_Left:  self.changeImage(-1)
         elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
         else: QWidget.keyPressEvent(self, event)
 
 
 app, ui = QApplication([]), Ui()
-sys.exit(app.exec_())
+sys_exit(app.exec_())
