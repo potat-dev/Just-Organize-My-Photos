@@ -1,7 +1,7 @@
+from subprocess import run as os_run
+from re import match as match_regex
 from math import floor, log, pow
 from datetime import datetime
-from re import match as match_regex
-from subprocess import run as os_run
 import os
 
 def convert_size(size_bytes):
@@ -29,11 +29,11 @@ def smartRename(file):
     return new_path
 
 def viewFile(path):
-    if path == "": return Null
+    if path == "": return None
     os.startfile(path, 'open')
 
 def showInExplorer(path):
-    if path == "": return Null
+    if path == "": return None
     os_run([
         os.path.join(os.getenv('WINDIR'), 'explorer.exe'),
         '/select,', os.path.normpath(path)
