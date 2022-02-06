@@ -1,174 +1,258 @@
-# импортируем только необходимые модули PyQt5
-from PyQt5.QtWidgets import QApplication, QDialog, QWidget, QFileDialog
-from PyQt5.QtCore import Qt, QEvent, QFile
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-# импортируем все остальное
-from functools import partial
-from glob import glob
-from PIL import Image
+class Ui_App(object):
+    def setupUi(self, App):
+        App.setObjectName("App")
+        App.resize(940, 770)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(App.sizePolicy().hasHeightForWidth())
+        App.setSizePolicy(sizePolicy)
+        App.setMinimumSize(QtCore.QSize(940, 770))
+        App.setMaximumSize(QtCore.QSize(940, 770))
+        self.canvas = QtWidgets.QGraphicsView(App)
+        self.canvas.setGeometry(QtCore.QRect(10, 10, 611, 611))
+        self.canvas.setMouseTracking(True)
+        self.canvas.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.canvas.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.canvas.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.canvas.setInteractive(True)
+        self.canvas.setObjectName("canvas")
+        self.verticalLayoutWidget = QtWidgets.QWidget(App)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(620, 480, 322, 141))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.pathHolder = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.pathHolder.setContentsMargins(11, 10, 10, 0)
+        self.pathHolder.setSpacing(10)
+        self.pathHolder.setObjectName("pathHolder")
+        self.actionsHolder = QtWidgets.QHBoxLayout()
+        self.actionsHolder.setSpacing(10)
+        self.actionsHolder.setObjectName("actionsHolder")
+        self.btn_prev = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_prev.sizePolicy().hasHeightForWidth())
+        self.btn_prev.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btn_prev.setFont(font)
+        self.btn_prev.setObjectName("btn_prev")
+        self.actionsHolder.addWidget(self.btn_prev)
+        self.btn_del = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_del.sizePolicy().hasHeightForWidth())
+        self.btn_del.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btn_del.setFont(font)
+        self.btn_del.setObjectName("btn_del")
+        self.actionsHolder.addWidget(self.btn_del)
+        self.btn_next = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_next.sizePolicy().hasHeightForWidth())
+        self.btn_next.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btn_next.setFont(font)
+        self.btn_next.setObjectName("btn_next")
+        self.actionsHolder.addWidget(self.btn_next)
+        self.pathHolder.addLayout(self.actionsHolder)
+        self.path_btn = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.path_btn.sizePolicy().hasHeightForWidth())
+        self.path_btn.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.path_btn.setFont(font)
+        self.path_btn.setObjectName("path_btn")
+        self.pathHolder.addWidget(self.path_btn)
+        self.gridLayoutWidget = QtWidgets.QWidget(App)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 620, 941, 151))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.foldersGrid = QtWidgets.QGridLayout(self.gridLayoutWidget)
+        self.foldersGrid.setContentsMargins(10, 11, 10, 11)
+        self.foldersGrid.setSpacing(10)
+        self.foldersGrid.setObjectName("foldersGrid")
+        self.bt6 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt6.sizePolicy().hasHeightForWidth())
+        self.bt6.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt6.setFont(font)
+        self.bt6.setObjectName("bt6")
+        self.foldersGrid.addWidget(self.bt6, 0, 5, 1, 1)
+        self.bt2 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt2.sizePolicy().hasHeightForWidth())
+        self.bt2.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt2.setFont(font)
+        self.bt2.setObjectName("bt2")
+        self.foldersGrid.addWidget(self.bt2, 0, 1, 1, 1)
+        self.bt4 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt4.sizePolicy().hasHeightForWidth())
+        self.bt4.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt4.setFont(font)
+        self.bt4.setObjectName("bt4")
+        self.foldersGrid.addWidget(self.bt4, 0, 3, 1, 1)
+        self.bt3 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt3.sizePolicy().hasHeightForWidth())
+        self.bt3.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt3.setFont(font)
+        self.bt3.setObjectName("bt3")
+        self.foldersGrid.addWidget(self.bt3, 0, 2, 1, 1)
+        self.bt5 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt5.sizePolicy().hasHeightForWidth())
+        self.bt5.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt5.setFont(font)
+        self.bt5.setObjectName("bt5")
+        self.foldersGrid.addWidget(self.bt5, 0, 4, 1, 1)
+        self.bt1 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt1.sizePolicy().hasHeightForWidth())
+        self.bt1.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt1.setFont(font)
+        self.bt1.setObjectName("bt1")
+        self.foldersGrid.addWidget(self.bt1, 0, 0, 1, 1)
+        self.bt7 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt7.sizePolicy().hasHeightForWidth())
+        self.bt7.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt7.setFont(font)
+        self.bt7.setObjectName("bt7")
+        self.foldersGrid.addWidget(self.bt7, 1, 0, 1, 1)
+        self.bt8 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt8.sizePolicy().hasHeightForWidth())
+        self.bt8.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt8.setFont(font)
+        self.bt8.setObjectName("bt8")
+        self.foldersGrid.addWidget(self.bt8, 1, 1, 1, 1)
+        self.bt9 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt9.sizePolicy().hasHeightForWidth())
+        self.bt9.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt9.setFont(font)
+        self.bt9.setObjectName("bt9")
+        self.foldersGrid.addWidget(self.bt9, 1, 2, 1, 1)
+        self.bt0 = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.bt0.sizePolicy().hasHeightForWidth())
+        self.bt0.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.bt0.setFont(font)
+        self.bt0.setObjectName("bt0")
+        self.foldersGrid.addWidget(self.bt0, 1, 3, 1, 1)
+        self.btS = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btS.sizePolicy().hasHeightForWidth())
+        self.btS.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btS.setFont(font)
+        self.btS.setObjectName("btS")
+        self.foldersGrid.addWidget(self.btS, 1, 4, 1, 1)
+        self.btE = QtWidgets.QPushButton(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btE.sizePolicy().hasHeightForWidth())
+        self.btE.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btE.setFont(font)
+        self.btE.setObjectName("btE")
+        self.foldersGrid.addWidget(self.btE, 1, 5, 1, 1)
+        self.info_text = QtWidgets.QLabel(App)
+        self.info_text.setGeometry(QtCore.QRect(630, 10, 301, 201))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.info_text.setFont(font)
+        self.info_text.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.info_text.setWordWrap(True)
+        self.info_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.info_text.setObjectName("info_text")
+        self.path_text = QtWidgets.QLabel(App)
+        self.path_text.setGeometry(QtCore.QRect(630, 270, 301, 201))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.path_text.setFont(font)
+        self.path_text.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.path_text.setWordWrap(True)
+        self.path_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.path_text.setObjectName("path_text")
 
-from func import * # полезные функции
-from app import *  # настройки интерфейса
+        self.retranslateUi(App)
+        QtCore.QMetaObject.connectSlotsByName(App)
 
-
-class ui(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.ui = Ui_App()
-        self.ui.setupUi(self)
-        self.show()
-
-        self.image_list, self.folders = [], {}
-        self.image_id, self.img_count = 0, 0
-        self.image, self.scene = None, None
-        self.path, self.image_path = "", ""
-
-        self.setChildrenFocusPolicy(Qt.NoFocus)
-        self.ui.path_btn.clicked.connect(self.selectFolder)
-        self.ui.btn_next.clicked.connect(partial(self.changeImage,  1))
-        self.ui.btn_prev.clicked.connect(partial(self.changeImage, -1))
-        self.ui.btn_del.clicked.connect(self.deleteImage)
-        self.ui.canvas.setMouseTracking(True)
-        self.ui.canvas.viewport().installEventFilter(self)
-
-        # настраиваем драгндроп
-        self.ui.canvas.dropEvent = lambda e: self.open_dnd(e)
-        self.ui.canvas.dragEnterEvent = lambda e: e.accept() if isAccepted(e) else e.ignore()
-
-        self.buttons = [self.ui.bt1, self.ui.bt2, self.ui.bt3, self.ui.bt4,
-                        self.ui.bt5, self.ui.bt6, self.ui.bt7, self.ui.bt8,
-                        self.ui.bt9, self.ui.bt0, self.ui.btS, self.ui.btE]
-
-        self.tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Space", "Enter"]
-        self.keys = [Qt.Key_1, Qt.Key_2, Qt.Key_3, Qt.Key_4, Qt.Key_5, Qt.Key_6,
-                     Qt.Key_7, Qt.Key_8, Qt.Key_9, Qt.Key_0, Qt.Key_Space, Qt.Key_Return]
-
-        for btn, tag in zip(self.buttons, self.tags):
-            btn.setContextMenuPolicy(Qt.CustomContextMenu)
-            btn.clicked.connect(partial(self.move2folder, folder=tag))
-            btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
-
-    def setChildrenFocusPolicy(self, policy):
-        def recursiveSetChildFocusPolicy (parentQWidget):
-            for childQWidget in parentQWidget.findChildren(QtWidgets.QWidget):
-                childQWidget.setFocusPolicy(policy)
-                recursiveSetChildFocusPolicy(childQWidget)
-        recursiveSetChildFocusPolicy(self)
-
-    def selectFolder(self):
-        self.checkPath(self.pickDirectory())
-
-    def pickDirectory(self):
-        return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-
-    def open_dnd(self, event):
-        path = isAccepted(event)
-        if path: self.checkPath(path)  
-    
-    def checkPath(self, folder):
-        if folder == "": return None
-        self.path = folder
-        self.image_list = [
-            item.replace("\\", "/") for i in [
-                glob(f"{self.path}/*{ext}") for ext in \
-                ["jpg","jpeg","png","jfif","bmp","gif","pbm","pgm","ppm","xbm","xpm"]
-            ] for item in i
-        ]
-        self.img_count, self.image_id = len(self.image_list), 0
-        self.ui.path_text.setText(f"path: {self.path} ({self.img_count} photo)")
-        if self.img_count == 0: return None
-        self.displayImg()
-    
-    def deleteImage(self):
-        if self.img_count > 0:
-            del_img = self.image_list.pop(self.image_id)
-            self.img_count = len(self.image_list)
-            if self.image_id == self.img_count: self.image_id -= 1
-            if self.img_count > 0: self.displayImg()
-            else: self.clearPreview()
-            self.image.close()
-            if QtWidgets.QApplication.keyboardModifiers() == Qt.ControlModifier:
-                os.remove(del_img)
-            else:
-                QFile.moveToTrash(del_img)
-    
-    def clearPreview(self):
-        self.scene.clear()
-        self.ui.canvas.viewport().update()
-        self.ui.path_text.setText(f"File: Null\nPath: {self.path}")
-        self.ui.info_text.setText(
-            f"Image {self.image_id + 1} / {self.img_count}\n[ all files sorted ]")
-
-    def displayImg(self):
-        if self.img_count <= 0: return None
-        self.image_path = self.image_list[self.image_id]
-        if os.path.isfile(self.image_path):
-            w, h = self.ui.canvas.width(), self.ui.canvas.height()
-            self.scene = QtWidgets.QGraphicsScene(self)
-            pixmap = QPixmap(self.image_path)
-            item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, Qt.KeepAspectRatio))
-            self.scene.addItem(item)
-            self.ui.canvas.setScene(self.scene)
-            self.ui.path_text.setText(f"File: {os.path.basename(self.image_path)}\nPath: {self.path}")
-            try:
-                self.image = Image.open(self.image_path)
-                self.ui.info_text.setText(
-                    f"Image {self.image_id + 1} / {self.img_count}\n" +
-                    f"Res: {' × '.join([str(i) for i in self.image.size])}\n" +
-                    f"Size: {convert_size(os.path.getsize(self.image_path))}\n" +
-                    f"Date: {getModifyDate(self.image_path)}") # full: %d.%m.%Y %H:%M:%S
-            except OSError:
-                self.ui.info_text.setText(
-                    f"Image {self.image_id + 1} / {self.img_count}\nRes: Null\n" +
-                    f"Size: {convert_size(os.path.getsize(self.image_path))}\nDate: Null\n" +
-                    "[ corrupted image file ]")
-
-    def eventFilter(self, source, event):
-        if event.type() == QEvent.MouseButtonPress:
-            if event.button() == Qt.LeftButton:
-                viewFile(self.image_path)
-            elif event.button() == Qt.RightButton:
-                showInExplorer(self.image_path)
-        return super(ui, self).eventFilter(source, event)
-
-    def changeImage(self, order):
-        self.image_id += order
-        if self.image_id == self.img_count:
-            self.image_id = 0
-        elif self.image_id < 0:
-            self.image_id = self.img_count-1
-        self.displayImg()
-
-    def move2folder(self, folder, change=False):
-        modifier = QtWidgets.QApplication.keyboardModifiers()
-        if change or folder not in self.folders.keys() \
-        or modifier in (Qt.ControlModifier, Qt.ShiftModifier):
-            path = self.pickDirectory()
-            if path == "" : return None
-            self.folders |= {folder: path}
-            self.buttons[self.tags.index(folder)].setText("Key " + folder + ":\n" + os.path.basename(path))
-
-        if self.img_count <= 0: return None # перемещать нечего
-        if folder in self.folders.keys():
-            self.image.close() # нужно закрывать файл перед перемещением
-            img_pth = self.image_list.pop(self.image_id)
-            new_pth = os.path.join(self.folders[folder], os.path.basename(img_pth))
-            #* делать проверку, существует ли файл
-            if os.path.isfile(new_pth):
-                print("файл уже существует", smartRename(new_pth))
-                new_pth = smartRename(new_pth)
-
-            os.replace(img_pth, new_pth)
-            self.img_count = len(self.image_list)
-            if self.image_id == self.img_count: self.image_id -= 1
-            if self.img_count > 0: self.displayImg()
-            else: self.clearPreview()
-
-    def keyPressEvent(self, event):
-        k = event.key()
-        if k == Qt.Key_Delete:  self.deleteImage()
-        elif k == Qt.Key_Right: self.changeImage(1)
-        elif k == Qt.Key_Left:  self.changeImage(-1)
-        elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
-        else: QWidget.keyPressEvent(self, event)
+    def retranslateUi(self, App):
+        _translate = QtCore.QCoreApplication.translate
+        App.setWindowTitle(_translate("App", "Just organize my photos"))
+        self.btn_prev.setText(_translate("App", "<"))
+        self.btn_del.setText(_translate("App", "Delete"))
+        self.btn_next.setText(_translate("App", ">"))
+        self.path_btn.setText(_translate("App", "Select Path"))
+        self.bt6.setText(_translate("App", "Key 6"))
+        self.bt2.setText(_translate("App", "Key 2"))
+        self.bt4.setText(_translate("App", "Key 4"))
+        self.bt3.setText(_translate("App", "Key 3"))
+        self.bt5.setText(_translate("App", "Key 5"))
+        self.bt1.setText(_translate("App", "Key 1"))
+        self.bt7.setText(_translate("App", "Key 7"))
+        self.bt8.setText(_translate("App", "Key 8"))
+        self.bt9.setText(_translate("App", "Key 9"))
+        self.bt0.setText(_translate("App", "Key 0"))
+        self.btS.setText(_translate("App", "Space"))
+        self.btE.setText(_translate("App", "Enter"))
+        self.info_text.setText(_translate("App", "Image Info"))
+        self.path_text.setText(_translate("App", "Path Info"))

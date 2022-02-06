@@ -44,3 +44,6 @@ def isAccepted(event):
         paths = [f.toLocalFile() for f in event.mimeData().urls()]
         return paths[0] if all([os.path.isdir(p) for p in paths]) else 0
     return False
+
+def res_quality():
+    pass
