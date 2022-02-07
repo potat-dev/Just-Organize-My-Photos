@@ -24,7 +24,9 @@ class app(QWidget):
         self.image, self.scene = None, None
         self.path, self.image_path = "", ""
 
+        #! это мешает копированию текста с info_text
         self.setChildrenFocusPolicy(Qt.NoFocus)
+
         self.ui.path_btn.clicked.connect(self.selectFolder)
         self.ui.btn_next.clicked.connect(partial(self.changeImage,  1))
         self.ui.btn_prev.clicked.connect(partial(self.changeImage, -1))
@@ -117,12 +119,15 @@ class app(QWidget):
                     f"Image {self.image_id + 1} / {self.img_count}\n" +
                     f"Res: {' × '.join([str(i) for i in self.image.size])}\n" +
                     f"Size: {convert_size(os.path.getsize(self.image_path))}\n" +
-                    f"Date: {getModifyDate(self.image_path)}") # full: %d.%m.%Y %H:%M:%S
+                    f"Date: {getModifyDate(self.image_path)}" + # full: %d.%m.%Y %H:%M:%S
+                    f"\n\nQuality: {format_res(self.image.size, print_name=True)}")
             except OSError:
                 self.ui.info_text.setText(
                     f"Image {self.image_id + 1} / {self.img_count}\nRes: Null\n" +
                     f"Size: {convert_size(os.path.getsize(self.image_path))}\nDate: Null\n" +
                     "[ corrupted image file ]")
+            self.ui.info_text.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            self.ui.info_text.setCursor(Qt.IBeamCursor)
 
     def eventFilter(self, source, event):
         if event.type() == QEvent.MouseButtonPress:
@@ -130,7 +135,7 @@ class app(QWidget):
                 viewFile(self.image_path)
             elif event.button() == Qt.RightButton:
                 showInExplorer(self.image_path)
-        return super(app, self).eventFilter(source, event)
+        return super().eventFilter(source, event)
 
     def changeImage(self, order):
         self.image_id += order
@@ -172,3 +177,10 @@ class app(QWidget):
         elif k == Qt.Key_Left:  self.changeImage(-1)
         elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
         else: QWidget.keyPressEvent(self, event)
+
+
+if __name__ == "__main__": #? for test
+    from PyQt5.QtWidgets import QApplication
+    from sys import exit as sys_exit
+    app, ui = QApplication([]), app()
+    sys_exit(app.exec_())

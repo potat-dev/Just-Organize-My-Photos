@@ -4,6 +4,8 @@ from math import floor, log, pow
 from datetime import datetime
 import os
 
+from pprint import pprint
+
 def convert_size(size_bytes):
     if size_bytes == 0: return "0"
     i = int(floor(log(size_bytes, 1024)))
@@ -45,5 +47,23 @@ def isAccepted(event):
         return paths[0] if all([os.path.isdir(p) for p in paths]) else 0
     return False
 
-def res_quality():
-    pass
+def find_nearest(n, d):
+    for k, v in d.items():
+        if n >= v: return k
+    return None
+
+def format_res(size, print_name = False):
+    types = {'Ultra HD': 2160, 'Full HD': 1080, 'HD': 720, 'Poor': 1}
+    names = {'12K+' : 6480, '10K' : 5760, '8K'  : 4320,
+             '7K'   : 3780, '6K'  : 3240, '5K'  : 2700,
+             '4K'   : 2160, '3K'  : 1620, '2K'  : 1440,
+             '1080p': 1080, '720p': 720,  '480p': 480,
+             '360p' : 360,  '240p': 240,  '144p': 144}
+
+    if size[0] == 0 or size[1] == 0:
+        return 'Zero'
+
+    ratio, min_s = max(size) / min(size), min(size)
+    if ratio > 4: return 'Thin'
+
+    return find_nearest(min_s, types) + (f" {find_nearest(min_s, names)}" if print_name else "")
