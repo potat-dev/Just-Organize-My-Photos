@@ -24,8 +24,7 @@ class app(QWidget):
         self.image, self.scene = None, None
         self.path, self.image_path = "", ""
 
-        #! это мешает копированию текста с info_text
-        self.setChildrenFocusPolicy(Qt.NoFocus)
+        self.setChildrenFocusPolicy(Qt.ClickFocus)
 
         self.ui.path_btn.clicked.connect(self.selectFolder)
         self.ui.btn_next.clicked.connect(partial(self.changeImage,  1))
@@ -61,8 +60,8 @@ class app(QWidget):
     def selectFolder(self):
         self.checkPath(self.pickDirectory())
 
-    def pickDirectory(self):
-        return str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+    def pickDirectory(self, text="Select Directory"):
+        return str(QFileDialog.getExistingDirectory(self, text))
 
     def open_dnd(self, event):
         path = isAccepted(event)
@@ -126,7 +125,6 @@ class app(QWidget):
                     f"Image {self.image_id + 1} / {self.img_count}\nRes: Null\n" +
                     f"Size: {convert_size(os.path.getsize(self.image_path))}\nDate: Null\n" +
                     "[ corrupted image file ]")
-            self.ui.info_text.setTextInteractionFlags(Qt.TextSelectableByMouse)
             self.ui.info_text.setCursor(Qt.IBeamCursor)
 
     def eventFilter(self, source, event):
@@ -149,7 +147,7 @@ class app(QWidget):
         modifier = QtWidgets.QApplication.keyboardModifiers()
         if change or folder not in self.folders.keys() \
         or modifier in (Qt.ControlModifier, Qt.ShiftModifier):
-            path = self.pickDirectory()
+            path = self.pickDirectory("Select target directory")
             if path == "" : return None
             self.folders |= {folder: path}
             self.buttons[self.tags.index(folder)].setText("Key " + folder + ":\n" + os.path.basename(path))
