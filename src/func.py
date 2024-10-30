@@ -32,7 +32,10 @@ def smartRename(file):
 
 def viewFile(path):
     if path == "": return None
-    os.startfile(path, 'open')
+    try:
+        os.startfile(path, 'open')
+    except:
+        pass
 
 def showInExplorer(path):
     if path == "": return None
