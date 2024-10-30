@@ -65,8 +65,8 @@ class app(QWidget):
 
     def open_dnd(self, event):
         path = isAccepted(event)
-        if path: self.checkPath(path)  
-    
+        if path: self.checkPath(path)
+
     def checkPath(self, folder):
         if folder == "": return None
         self.path = folder
@@ -80,7 +80,7 @@ class app(QWidget):
         self.ui.path_text.setText(f"path: {self.path} ({self.img_count} photo)")
         if self.img_count == 0: return None
         self.displayImg()
-    
+
     def deleteImage(self):
         if self.img_count > 0:
             del_img = self.image_list.pop(self.image_id)
@@ -93,7 +93,7 @@ class app(QWidget):
                 os.remove(del_img)
             else:
                 QFile.moveToTrash(del_img)
-    
+
     def clearPreview(self):
         self.scene.clear()
         self.ui.canvas.viewport().update()
