@@ -107,8 +107,12 @@ class app(QWidget):
         if os.path.isfile(self.image_path):
             w, h = self.ui.canvas.width(), self.ui.canvas.height()
             self.scene = QtWidgets.QGraphicsScene(self)
+            # Load the pixmap from the image path
             pixmap = QPixmap(self.image_path)
-            item = QtWidgets.QGraphicsPixmapItem(pixmap.scaled(w, h, Qt.KeepAspectRatio))
+            # Scale with smooth transformation for better quality
+            scaled_pixmap = pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            # Create the QGraphicsPixmapItem with the scaled pixmap
+            item = QtWidgets.QGraphicsPixmapItem(scaled_pixmap)
             self.scene.addItem(item)
             self.ui.canvas.setScene(self.scene)
             self.ui.path_text.setText(f"File: {os.path.basename(self.image_path)}\nPath: {self.path}")
