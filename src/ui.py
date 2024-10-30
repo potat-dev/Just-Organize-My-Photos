@@ -22,58 +22,32 @@ class Ui_App(object):
         self.verticalLayoutWidget = QtWidgets.QWidget(App)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(620, 480, 322, 141))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+
         self.pathHolder = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.pathHolder.setContentsMargins(11, 10, 10, 0)
         self.pathHolder.setSpacing(10)
         self.pathHolder.setObjectName("pathHolder")
+
         self.actionsHolder = QtWidgets.QHBoxLayout()
         self.actionsHolder.setSpacing(10)
         self.actionsHolder.setObjectName("actionsHolder")
-        self.btn_prev = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_prev.sizePolicy().hasHeightForWidth())
-        self.btn_prev.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.btn_prev.setFont(font)
-        self.btn_prev.setObjectName("btn_prev")
+
+        # Create buttons using a helper function
+        self.btn_prev = self.createButton("btn_prev", 10, self.verticalLayoutWidget)
+        self.btn_del = self.createButton("btn_del", 10, self.verticalLayoutWidget)
+        self.btn_next = self.createButton("btn_next", 10, self.verticalLayoutWidget)
+
+        # Add buttons to actionsHolder layout
         self.actionsHolder.addWidget(self.btn_prev)
-        self.btn_del = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_del.sizePolicy().hasHeightForWidth())
-        self.btn_del.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.btn_del.setFont(font)
-        self.btn_del.setObjectName("btn_del")
         self.actionsHolder.addWidget(self.btn_del)
-        self.btn_next = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_next.sizePolicy().hasHeightForWidth())
-        self.btn_next.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.btn_next.setFont(font)
-        self.btn_next.setObjectName("btn_next")
         self.actionsHolder.addWidget(self.btn_next)
+
+        # Add actionsHolder layout to pathHolder layout
         self.pathHolder.addLayout(self.actionsHolder)
-        self.path_btn = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.path_btn.sizePolicy().hasHeightForWidth())
-        self.path_btn.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.path_btn.setFont(font)
-        self.path_btn.setObjectName("path_btn")
+
+        self.path_btn = self.createButton("path_btn", 10, self.verticalLayoutWidget)
         self.pathHolder.addWidget(self.path_btn)
+
         self.gridLayoutWidget = QtWidgets.QWidget(App)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 620, 941, 151))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
@@ -104,6 +78,22 @@ class Ui_App(object):
 
         self.retranslateUi(App)
         QtCore.QMetaObject.connectSlotsByName(App)
+
+
+    def createButton(self, name, font_size, parent):
+        button = QtWidgets.QPushButton(parent)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
+        button.setSizePolicy(sizePolicy)
+
+        font = QtGui.QFont()
+        font.setPointSize(font_size)
+        button.setFont(font)
+        button.setObjectName(name)
+
+        return button
 
 
     def createSortingButtons(self, App):
