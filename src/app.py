@@ -82,6 +82,8 @@ class app(QWidget):
                 ["jpg","jpeg","png","jfif","bmp","gif","pbm","pgm","ppm","xbm","xpm"]
             ] for item in i
         ]
+        # Sort the image_list alphabetically
+        self.image_list = sorted(self.image_list, reverse=True)
         self.img_count, self.image_id = len(self.image_list), 0
         self.ui.path_text.setText(f"path: {self.path} ({self.img_count} photo)")
         if self.img_count == 0: return None
