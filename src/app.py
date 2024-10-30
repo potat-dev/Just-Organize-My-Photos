@@ -7,13 +7,14 @@ from PyQt5.QtGui import QPixmap
 from functools import partial
 from glob import glob
 from PIL import Image
+import argparse  # New import for argument parsing
 
 from func import * # полезные функции
 from ui import *  # настройки интерфейса
 
 
 class app(QWidget):
-    def __init__(self):
+    def __init__(self, initial_dir=None):  # Accept initial_dir as a parameter
         super().__init__()
         self.ui = Ui_App()
         self.ui.setupUi(self)
@@ -23,6 +24,7 @@ class app(QWidget):
         self.image_id, self.img_count = 0, 0
         self.image, self.scene = None, None
         self.path, self.image_path = "", ""
+        self.initial_dir = initial_dir  # Store the initial directory
 
         self.setChildrenFocusPolicy(Qt.ClickFocus)
 
@@ -50,6 +52,9 @@ class app(QWidget):
             btn.clicked.connect(partial(self.move2folder, folder=tag))
             btn.customContextMenuRequested.connect(partial(self.move2folder, folder=tag, change=True))
 
+        if initial_dir:  # If an initial directory is provided, load it
+            self.checkPath(initial_dir)
+
     def setChildrenFocusPolicy(self, policy):
         def recursiveSetChildFocusPolicy (parentQWidget):
             for childQWidget in parentQWidget.findChildren(QtWidgets.QWidget):
@@ -61,7 +66,8 @@ class app(QWidget):
         self.checkPath(self.pickDirectory())
 
     def pickDirectory(self, text="Select Directory"):
-        return str(QFileDialog.getExistingDirectory(self, text))
+        # Use the initial_dir as the starting directory for QFileDialog
+        return str(QFileDialog.getExistingDirectory(self, text, self.initial_dir or ""))
 
     def open_dnd(self, event):
         path = isAccepted(event)
@@ -185,6 +191,17 @@ class app(QWidget):
 
 if __name__ == "__main__": #? for test
     from PyQt5.QtWidgets import QApplication
-    from sys import exit as sys_exit
-    app, ui = QApplication([]), app()
-    sys_exit(app.exec_())
+    from  sys import exit as sys_exit
+    import os
+
+    # Argument parsing setup
+    parser = argparse.ArgumentParser(description='Image Sorting Application')
+    parser.add_argument('--dir', type=str, help='Directory to load images from.')
+
+    args = parser.parse_args()
+
+    initial_directory = args.dir if args.dir and os.path.isdir(args.dir) else None
+
+    app_instance = QApplication([])
+    ui = app(initial_directory)  # Pass the directory if it exists
+    sys_exit(app_instance.exec_())
