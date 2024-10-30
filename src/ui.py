@@ -81,8 +81,32 @@ class Ui_App(object):
         self.foldersGrid.setContentsMargins(10, 11, 10, 11)
         self.foldersGrid.setSpacing(10)
 
+        self.createSortingButtons(App)
+
+        self.info_text = QtWidgets.QLabel(App)
+        self.info_text.setGeometry(QtCore.QRect(630, 10, 301, 201))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.info_text.setFont(font)
+        self.info_text.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.info_text.setWordWrap(True)
+        self.info_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.info_text.setObjectName("info_text")
+        self.path_text = QtWidgets.QLabel(App)
+        self.path_text.setGeometry(QtCore.QRect(630, 270, 301, 201))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.path_text.setFont(font)
+        self.path_text.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.path_text.setWordWrap(True)
+        self.path_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.path_text.setObjectName("path_text")
+
+        self.retranslateUi(App)
+        QtCore.QMetaObject.connectSlotsByName(App)
 
 
+    def createSortingButtons(self, App):
         buttons_info = [
             {"name": "bt1", "pos": (0, 0)},
             {"name": "bt2", "pos": (0, 1)},
@@ -114,30 +138,6 @@ class Ui_App(object):
             # Add the button to the grid layout
             self.foldersGrid.addWidget(button, button_info["pos"][0], button_info["pos"][1], 1, 1)
 
-
-
-
-        self.info_text = QtWidgets.QLabel(App)
-        self.info_text.setGeometry(QtCore.QRect(630, 10, 301, 201))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.info_text.setFont(font)
-        self.info_text.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.info_text.setWordWrap(True)
-        self.info_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-        self.info_text.setObjectName("info_text")
-        self.path_text = QtWidgets.QLabel(App)
-        self.path_text.setGeometry(QtCore.QRect(630, 270, 301, 201))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.path_text.setFont(font)
-        self.path_text.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
-        self.path_text.setWordWrap(True)
-        self.path_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-        self.path_text.setObjectName("path_text")
-
-        self.retranslateUi(App)
-        QtCore.QMetaObject.connectSlotsByName(App)
 
     def retranslateUi(self, App):
         _translate = QtCore.QCoreApplication.translate
