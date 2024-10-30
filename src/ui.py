@@ -114,13 +114,7 @@ class Ui_App(object):
 
         # Create buttons and store references as attributes of the class
         for button_info in buttons_info:
-            button = QtWidgets.QPushButton(self.gridLayoutWidget)
-            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
-            button.setSizePolicy(sizePolicy)
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            button.setFont(font)
-            button.setObjectName(button_info["name"])
+            button = self.createButton(button_info["name"], 10, self.gridLayoutWidget)
 
             # Store the button reference as an attribute
             setattr(self, button_info["name"], button)
