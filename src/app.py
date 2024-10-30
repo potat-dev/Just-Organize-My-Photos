@@ -176,7 +176,9 @@ class app(QWidget):
         k = event.key()
         if k == Qt.Key_Delete:  self.deleteImage()
         elif k == Qt.Key_Right: self.changeImage(1)
+        elif k == Qt.Key_D:     self.changeImage(1)
         elif k == Qt.Key_Left:  self.changeImage(-1)
+        elif k == Qt.Key_A:     self.changeImage(-1)
         elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
         else: QWidget.keyPressEvent(self, event)
 
