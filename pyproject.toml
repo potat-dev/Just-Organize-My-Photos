@@ -10,7 +10,6 @@ packages = [{ include = "jomphotos" }]
 [tool.poetry.dependencies]
 python = "^3.9"
 pillow = "^11.0.0"
-PyQt5 = "^5.15.11"
 PyQt6 = "^6.7.1"
 
 [tool.poetry.dev-dependencies]

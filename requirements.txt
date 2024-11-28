@@ -1,5 +1,2 @@
-# pip install pipreqs
-# pipreqs --force
-Pillow==10.0.1
-PyQt5==5.15.6
-PyQt6==6.2.3
+Pillow==11.0.0
+PyQt6==6.7.1
