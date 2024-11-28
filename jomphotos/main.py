@@ -1,7 +1,7 @@
 import sys
 import os
 import argparse
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 from jomphotos import app
 
@@ -13,11 +13,11 @@ def main():
 
     initial_directory = args.dir if args.dir and os.path.isdir(args.dir) else None
 
-    app_instance = QApplication(sys.argv)
+    instance = QApplication(sys.argv)
     ui = app(initial_directory)
     ui.show()
 
-    sys.exit(app_instance.exec_())
+    sys.exit(instance.exec())
 
 
 if __name__ == "__main__":

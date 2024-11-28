@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QFileDialog
-from PyQt5.QtCore import Qt, QEvent, QFile
-from PyQt5.QtGui import QPixmap
-from PyQt5 import QtWidgets
+from PyQt6.QtWidgets import QWidget, QFileDialog
+from PyQt6.QtCore import Qt, QEvent, QFile
+from PyQt6.QtGui import QPixmap
+from PyQt6 import QtWidgets
 
 from functools import partial
 from glob import glob
@@ -24,18 +24,18 @@ class app(QWidget):
     tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Space", "Enter"]
 
     keys = [
-        Qt.Key_1,
-        Qt.Key_2,
-        Qt.Key_3,
-        Qt.Key_4,
-        Qt.Key_5,
-        Qt.Key_6,
-        Qt.Key_7,
-        Qt.Key_8,
-        Qt.Key_9,
-        Qt.Key_0,
-        Qt.Key_Space,
-        Qt.Key_Return,
+        Qt.Key.Key_1,
+        Qt.Key.Key_2,
+        Qt.Key.Key_3,
+        Qt.Key.Key_4,
+        Qt.Key.Key_5,
+        Qt.Key.Key_6,
+        Qt.Key.Key_7,
+        Qt.Key.Key_8,
+        Qt.Key.Key_9,
+        Qt.Key.Key_0,
+        Qt.Key.Key_Space,
+        Qt.Key.Key_Return,
     ]
 
     image_extensions = [
@@ -63,7 +63,7 @@ class app(QWidget):
         self.path, self.image_path = "", ""
         self.initial_dir = initial_dir
 
-        self.setChildrenFocusPolicy(Qt.ClickFocus)
+        self.setChildrenFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
         self.ui.path_btn.clicked.connect(self.selectFolder)
         self.ui.btn_next.clicked.connect(partial(self.changeImage, 1))
@@ -94,7 +94,7 @@ class app(QWidget):
         ]
 
         for btn, tag in zip(self.buttons, self.tags):
-            btn.setContextMenuPolicy(Qt.CustomContextMenu)
+            btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             btn.clicked.connect(partial(self.move2folder, folder=tag))
             btn.customContextMenuRequested.connect(
                 partial(self.move2folder, folder=tag, change=True)
@@ -158,7 +158,7 @@ class app(QWidget):
 
             self.image.close()
 
-            if QtWidgets.QApplication.keyboardModifiers() == Qt.ControlModifier:
+            if QtWidgets.QApplication.keyboardModifiers() == Qt.KeyboardModifier.ControlModifier:
                 os.remove(del_img)
             else:
                 QFile.moveToTrash(del_img)
@@ -184,7 +184,7 @@ class app(QWidget):
             pixmap = QPixmap(self.image_path)
             # Scale with smooth transformation for better quality
             scaled_pixmap = pixmap.scaled(
-                w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                w, h, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
             )
 
             # Create the QGraphicsPixmapItem with the scaled pixmap
@@ -211,13 +211,13 @@ class app(QWidget):
                     + "[ corrupted image file ]"
                 )
 
-            self.ui.info_text.setCursor(Qt.IBeamCursor)
+            self.ui.info_text.setCursor(Qt.CursorShape.IBeamCursor)
 
     def eventFilter(self, source, event):
-        if event.type() == QEvent.MouseButtonPress:
-            if event.button() == Qt.LeftButton:
+        if event.type() == QEvent.Type.MouseButtonPress:
+            if event.button() == Qt.MouseButton.LeftButton:
                 viewFile(self.image_path)
-            elif event.button() == Qt.RightButton:
+            elif event.button() == Qt.MouseButton.RightButton:
                 showInExplorer(self.image_path)
 
         return super().eventFilter(source, event)
@@ -238,7 +238,7 @@ class app(QWidget):
         if (
             change
             or folder not in self.folders.keys()
-            or modifier in (Qt.ControlModifier, Qt.ShiftModifier)
+            or modifier in (Qt.KeyboardModifier.ControlModifier, Qt.KeyboardModifier.ShiftModifier)
         ):
             path = self.pickDirectory("Select target directory")
             if path == "":
@@ -272,15 +272,15 @@ class app(QWidget):
 
     def keyPressEvent(self, event):
         k = event.key()
-        if k == Qt.Key_Delete:
+        if k == Qt.Key.Key_Delete:
             self.deleteImage()
-        elif k == Qt.Key_Right:
+        elif k == Qt.Key.Key_Right:
             self.changeImage(1)
-        elif k == Qt.Key_D:
+        elif k == Qt.Key.Key_D:
             self.changeImage(1)
-        elif k == Qt.Key_Left:
+        elif k == Qt.Key.Key_Left:
             self.changeImage(-1)
-        elif k == Qt.Key_A:
+        elif k == Qt.Key.Key_A:
             self.changeImage(-1)
         elif k in self.keys:
             self.move2folder(self.tags[self.keys.index(k)])

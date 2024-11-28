@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 
 class AppUI(object):
@@ -6,7 +6,7 @@ class AppUI(object):
         App.setObjectName("App")
         App.resize(940, 770)
         sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
         )
 
         sizePolicy.setHorizontalStretch(0)
@@ -18,9 +18,9 @@ class AppUI(object):
         self.canvas = QtWidgets.QGraphicsView(App)
         self.canvas.setGeometry(QtCore.QRect(10, 10, 611, 611))
         self.canvas.setMouseTracking(True)
-        self.canvas.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.canvas.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.canvas.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.canvas.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.canvas.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.canvas.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
         self.canvas.setInteractive(True)
         self.canvas.setObjectName("canvas")
         self.verticalLayoutWidget = QtWidgets.QWidget(App)
@@ -67,11 +67,11 @@ class AppUI(object):
         font.setPointSize(10)
         self.info_text.setFont(font)
         self.info_text.setAlignment(
-            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
 
         self.info_text.setWordWrap(True)
-        self.info_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.info_text.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.info_text.setObjectName("info_text")
         self.path_text = QtWidgets.QLabel(App)
         self.path_text.setGeometry(QtCore.QRect(630, 270, 301, 201))
@@ -79,11 +79,11 @@ class AppUI(object):
         font.setPointSize(10)
         self.path_text.setFont(font)
         self.path_text.setAlignment(
-            QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft
+            QtCore.Qt.AlignmentFlag.AlignBottom | QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft
         )
 
         self.path_text.setWordWrap(True)
-        self.path_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.path_text.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.path_text.setObjectName("path_text")
 
         self.retranslateUi(App)
@@ -92,8 +92,8 @@ class AppUI(object):
     def createButton(self, name, font_size, parent):
         button = QtWidgets.QPushButton(parent)
         sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.MinimumExpanding,
-            QtWidgets.QSizePolicy.MinimumExpanding,
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding,
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding,
         )
 
         sizePolicy.setHorizontalStretch(0)
