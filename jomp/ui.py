@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class AppUI(object):
+class AppUI:
     def setupUi(self, App):
         App.setObjectName("App")
         App.resize(940, 770)

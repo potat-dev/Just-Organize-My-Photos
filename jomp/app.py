@@ -73,7 +73,7 @@ class app(QWidget):
         self.ui.canvas.viewport().installEventFilter(self)
 
         # drag-n-drop support
-        self.ui.canvas.dropEvent = lambda e: self.open_dnd(e)
+        self.ui.canvas.dropEvent = self.open_dnd
         self.ui.canvas.dragEnterEvent = lambda e: (
             e.accept() if isAccepted(e) else e.ignore()
         )
