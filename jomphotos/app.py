@@ -1,5 +1,6 @@
-# импортируем только необходимые модули PyQt5
-from PyQt5.QtWidgets import QApplication, QDialog, QWidget, QFileDialog
+# импортируем необходимые модули PyQt5
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QWidget, QFileDialog
 from PyQt5.QtCore import Qt, QEvent, QFile
 from PyQt5.QtGui import QPixmap
 
@@ -7,9 +8,10 @@ from PyQt5.QtGui import QPixmap
 from functools import partial
 from glob import glob
 from PIL import Image
+import os
 
-from src.func import *  # полезные функции
-from src.ui import *  # настройки интерфейса
+from jomphotos.func import convert_size, getModifyDate, format_res, viewFile, showInExplorer, isAccepted, smartRename
+from jomphotos.ui import Ui_App
 
 
 class app(QWidget):
@@ -188,21 +190,3 @@ class app(QWidget):
         elif k == Qt.Key_A:     self.changeImage(-1)
         elif k in self.keys: self.move2folder(self.tags[self.keys.index(k)])
         else: QWidget.keyPressEvent(self, event)
-
-
-# if __name__ == "__main__": #? for test
-#     from PyQt5.QtWidgets import QApplication
-#     from  sys import exit as sys_exit
-#     import os
-
-#     # Argument parsing setup
-#     parser = argparse.ArgumentParser(description='Image Sorting Application')
-#     parser.add_argument('--dir', type=str, help='Directory to load images from.')
-
-#     args = parser.parse_args()
-
-#     initial_directory = args.dir if args.dir and os.path.isdir(args.dir) else None
-
-#     app_instance = QApplication([])
-#     ui = app(initial_directory)  # Pass the directory if it exists
-#     sys_exit(app_instance.exec_())
