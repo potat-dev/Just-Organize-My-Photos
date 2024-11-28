@@ -1,10 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_App(object):
+
+class AppUI(object):
     def setupUi(self, App):
         App.setObjectName("App")
         App.resize(940, 770)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
+
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(App.sizePolicy().hasHeightForWidth())
@@ -62,7 +66,10 @@ class Ui_App(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         self.info_text.setFont(font)
-        self.info_text.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.info_text.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
+
         self.info_text.setWordWrap(True)
         self.info_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.info_text.setObjectName("info_text")
@@ -71,7 +78,10 @@ class Ui_App(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         self.path_text.setFont(font)
-        self.path_text.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.path_text.setAlignment(
+            QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft
+        )
+
         self.path_text.setWordWrap(True)
         self.path_text.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
         self.path_text.setObjectName("path_text")
@@ -79,10 +89,13 @@ class Ui_App(object):
         self.retranslateUi(App)
         QtCore.QMetaObject.connectSlotsByName(App)
 
-
     def createButton(self, name, font_size, parent):
         button = QtWidgets.QPushButton(parent)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding,
+            QtWidgets.QSizePolicy.MinimumExpanding,
+        )
+
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(button.sizePolicy().hasHeightForWidth())
@@ -94,7 +107,6 @@ class Ui_App(object):
         button.setObjectName(name)
 
         return button
-
 
     def createSortingButtons(self, App):
         buttons_info = [
@@ -109,7 +121,7 @@ class Ui_App(object):
             {"name": "bt9", "pos": (1, 2)},
             {"name": "bt0", "pos": (1, 3)},
             {"name": "btS", "pos": (1, 4)},
-            {"name": "btE", "pos": (1, 5)}
+            {"name": "btE", "pos": (1, 5)},
         ]
 
         # Create buttons and store references as attributes of the class
@@ -120,11 +132,13 @@ class Ui_App(object):
             setattr(self, button_info["name"], button)
 
             # Add the button to the grid layout
-            self.foldersGrid.addWidget(button, button_info["pos"][0], button_info["pos"][1], 1, 1)
-
+            self.foldersGrid.addWidget(
+                button, button_info["pos"][0], button_info["pos"][1], 1, 1
+            )
 
     def retranslateUi(self, App):
         _translate = QtCore.QCoreApplication.translate
+
         App.setWindowTitle(_translate("App", "Just organize my photos"))
         self.btn_prev.setText(_translate("App", "<"))
         self.btn_del.setText(_translate("App", "Delete"))
