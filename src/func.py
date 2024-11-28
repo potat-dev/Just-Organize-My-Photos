@@ -4,7 +4,6 @@ from math import floor, log, pow
 from datetime import datetime
 import os
 
-from pprint import pprint
 
 def convert_size(size_bytes):
     if size_bytes == 0: return "0"

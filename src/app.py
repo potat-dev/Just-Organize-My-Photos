@@ -7,10 +7,9 @@ from PyQt5.QtGui import QPixmap
 from functools import partial
 from glob import glob
 from PIL import Image
-import argparse  # New import for argument parsing
 
-from func import * # полезные функции
-from ui import *  # настройки интерфейса
+from src.func import *  # полезные функции
+from src.ui import *  # настройки интерфейса
 
 
 class app(QWidget):
@@ -18,7 +17,7 @@ class app(QWidget):
         super().__init__()
         self.ui = Ui_App()
         self.ui.setupUi(self)
-        self.show()
+        # self.show()
 
         self.image_list, self.folders = [], {}
         self.image_id, self.img_count = 0, 0
@@ -191,19 +190,19 @@ class app(QWidget):
         else: QWidget.keyPressEvent(self, event)
 
 
-if __name__ == "__main__": #? for test
-    from PyQt5.QtWidgets import QApplication
-    from  sys import exit as sys_exit
-    import os
+# if __name__ == "__main__": #? for test
+#     from PyQt5.QtWidgets import QApplication
+#     from  sys import exit as sys_exit
+#     import os
 
-    # Argument parsing setup
-    parser = argparse.ArgumentParser(description='Image Sorting Application')
-    parser.add_argument('--dir', type=str, help='Directory to load images from.')
+#     # Argument parsing setup
+#     parser = argparse.ArgumentParser(description='Image Sorting Application')
+#     parser.add_argument('--dir', type=str, help='Directory to load images from.')
 
-    args = parser.parse_args()
+#     args = parser.parse_args()
 
-    initial_directory = args.dir if args.dir and os.path.isdir(args.dir) else None
+#     initial_directory = args.dir if args.dir and os.path.isdir(args.dir) else None
 
-    app_instance = QApplication([])
-    ui = app(initial_directory)  # Pass the directory if it exists
-    sys_exit(app_instance.exec_())
+#     app_instance = QApplication([])
+#     ui = app(initial_directory)  # Pass the directory if it exists
+#     sys_exit(app_instance.exec_())
