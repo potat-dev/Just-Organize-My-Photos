@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "just-organize-my-photos"
-version = "0.2.0"
+version = "0.3.0"
 description = "A simple PyQt program for manually sorting photos into folders using shortcuts."
 authors = ["Den <me@potat.dev>"]
 license = "MIT"

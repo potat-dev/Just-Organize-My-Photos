@@ -1,47 +1,82 @@
-# Just-Organize-My-Photos
-A simple PyQt program that will help you manually sort photos into folders using shortcuts
+# Just Organize My Photos - `jomp`
 
-Простая программа на PyQt которая поможет вручную разложить фотографии по папкам используя горячие клавиши. Вот примерно как-то так она выглядит:
+– *A simple PyQt6 program that helps you manually sort photos into folders using keyboard shortcuts.*
 
-![cat](/images/cat.png)
+`jomp` currently features a minimalist design and basic functionality: sorting photos from one folder into multiple others. Future updates may include additional features such as duplicate detection and corrupted file handling.
 
-У программы на данный момент очень минималистичный дизайн и простейший функционал: сортировка фоток из одной папки в несколько других. Возможно в дальнейшем появятся дополнительные функции, например удаление дубликатов или битых файлов
+> [!TIP]
+> This tool is particularly handy when you've recovered data from a damaged drive, leaving thousands of files jumbled together that need to be neatly reorganized into folders.
+> 
+Russian version of this README can be found [here](README_RU.md).
 
-> Очень удобно кстати, когда у тебя сломалась флешка, ты восстановил с нее данные, но теперь все файлы вперемешку, а их тысяч 40 и нужно снова все аккуратно рассортировать по папочкам
+Main screen of the app:
 
-## Функционал и фичи:
+![app](/images/app.png)
 
-* Drag-and-drop для открытия папки
-* Отображение информации о каждом файле: размер, дата, разрешение
-* Распознавание битых файлов
-* Удаление в корзину или полностью (по Ctrl+Del)
-* Умное переименование файла при перемещении (оба файла сохранятся если у них одинаковые имена)
-* Выбор папки при первом нажатии на кнопку, либо по Ctrl / ПКМ + нажатие
-* Просмотр файла в стандартном проложении Фото или в проводнике по клику (левой или правой кнопкой) по области предпросмотра
+## Features:
 
-## Будет добавлено в обновлении:
+* Drag-and-drop folder opening.
+* Display of file information: size, date, resolution.
+* Corrupted file detection.
+* Deletion to recycle bin or permanent deletion (<kbd>Ctrl</kbd> + <kbd>Del</kbd>).
+* Smart file renaming on move (both files are preserved if they have identical names).
+* Folder selection on first button click, or via <kbd>RMB</kbd> or <kbd>Ctrl</kbd> + <kbd>LMB</kbd>.
+* File preview with the ability to open in the default photo viewer (<kbd>LMB</kbd>) or file explorer (<kbd>RMB</kbd>).
 
-* Настройки! Больше настроек!!! 
-* Кастомизация хоткеев и изменение их количества
-* Более информативная (цветовая) индикация разрешения фото
-* Сортировка фото по размеру / имени / разрешению
-* Возможность открывать несколько папок одновременно
-* Возможность сканирования фото во всех подкаталогах
-* Предложение сразу удалить / переместить в другую папку все битые файлы
-* Программа в виде exe-файла
+## Planned Features:
 
-## Как запустить
+* Settings! More settings!!!
+* Hotkey customization and quantity adjustments.
+* More informative (color-coded) photo resolution indicators.
+* Sorting by size/name/resolution.
+* Opening multiple folders simultaneously.
+* Scanning for photos in subdirectories.
+* Option to delete/move all corrupted files at once.
+* Distribution as an executable file.
 
-1. Устанавливаем зависимости
+## How to Run
 
-   ```console
-   pip install -r requirements.txt
+There are two ways to run the application: using Poetry or by building and installing it locally. I recommend the second method because it allows you to run the application from anywhere on your system.
+
+### Run Locally with Poetry
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/potat-dev/just-organize-my-photos.git
+   cd just-organize-my-photos
    ```
-   
-2. Запускаем программу
 
-   ```console
-   python src/main.py
+2. Install dependencies:
+
+   ```bash
+   poetry install
    ```
 
-3. Готово! Да, вот настолько просто
+3. Run the application using Poetry:
+
+   ```bash
+   poetry run jomp
+   ```
+
+### Building and Installing
+
+1. Build a distributable wheel file:
+
+   ```bash
+   poetry build
+   ```
+
+2. Install the application locally:
+
+   ```bash
+   pip install .
+   ```
+
+3. Now you can run the application from anywhere on your system:
+
+   ```bash
+   jomp
+   ```
+
+   You can also specify the path to the folder you want to sort: `--dir /path/to/folder`

@@ -1,5 +1,9 @@
-.qt_for_python/
-__pycache__/
 .vscode/
+
+__pycache__/
+.qt_for_python/
+
+dist/
+
 *.exe
 *.7z
