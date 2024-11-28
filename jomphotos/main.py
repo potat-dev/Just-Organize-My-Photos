@@ -2,7 +2,8 @@ import sys
 import os
 import argparse
 from PyQt5.QtWidgets import QApplication
-from src.app import app
+
+from jomphotos import app
 
 
 def main():
