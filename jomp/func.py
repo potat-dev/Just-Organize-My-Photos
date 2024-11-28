@@ -62,7 +62,7 @@ def showInExplorer(path):
 def isAccepted(event):
     if event.mimeData().hasUrls():
         paths = [f.toLocalFile() for f in event.mimeData().urls()]
-        return paths[0] if all([os.path.isdir(p) for p in paths]) else 0
+        return paths[0] if all(os.path.isdir(p) for p in paths) else 0
 
     return False
 
