@@ -5,7 +5,7 @@ description = "A simple PyQt program for manually sorting photos into folders us
 authors = ["Den <me@potat.dev>"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "jomphotos" }]
+packages = [{ include = "jomp" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -19,4 +19,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-jomphotos = "jomphotos:main" # Entry point for running the app
+jomp = "jomp:main" # Entry point for running the app
