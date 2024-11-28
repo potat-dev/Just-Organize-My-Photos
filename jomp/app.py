@@ -8,8 +8,8 @@ from glob import glob
 from PIL import Image
 import os
 
-from jomphotos.ui import AppUI
-from jomphotos.func import (
+from jomp.ui import AppUI
+from jomp.func import (
     convert_size,
     getModifyDate,
     format_res,
@@ -158,7 +158,10 @@ class app(QWidget):
 
             self.image.close()
 
-            if QtWidgets.QApplication.keyboardModifiers() == Qt.KeyboardModifier.ControlModifier:
+            if (
+                QtWidgets.QApplication.keyboardModifiers()
+                == Qt.KeyboardModifier.ControlModifier
+            ):
                 os.remove(del_img)
             else:
                 QFile.moveToTrash(del_img)
@@ -184,7 +187,10 @@ class app(QWidget):
             pixmap = QPixmap(self.image_path)
             # Scale with smooth transformation for better quality
             scaled_pixmap = pixmap.scaled(
-                w, h, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
+                w,
+                h,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
 
             # Create the QGraphicsPixmapItem with the scaled pixmap
@@ -238,7 +244,8 @@ class app(QWidget):
         if (
             change
             or folder not in self.folders.keys()
-            or modifier in (Qt.KeyboardModifier.ControlModifier, Qt.KeyboardModifier.ShiftModifier)
+            or modifier
+            in (Qt.KeyboardModifier.ControlModifier, Qt.KeyboardModifier.ShiftModifier)
         ):
             path = self.pickDirectory("Select target directory")
             if path == "":

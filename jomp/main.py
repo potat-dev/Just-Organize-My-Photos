@@ -3,7 +3,7 @@ import os
 import argparse
 from PyQt6.QtWidgets import QApplication
 
-from jomphotos import app
+from jomp import app
 
 
 def main():
